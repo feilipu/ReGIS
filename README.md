@@ -1,24 +1,24 @@
 ## ReGIS - Remote Graphics Instruction Set
 ------------
 
-Read here for a full description on [how to enable ReGIS for Windows 10 and Linux desktop machines](https://feilipu.me/2022/09/28/regis-serial-graphics-for-arduino-rc2014/).
-
 ReGIS interprets commands that allow you to simply and efficiently control a video monitor screen and draw pictures on the screen with lines, curves, and circles using a serial interface (USART). Also, ReGIS provides commands to include scalable text characters in pictures. The ReGIS graphics language is designed for conciseness and easy transport of code from the host to the ReGIS device. The language consists of commands that are modified by options.
 
-## Preparing XTERM to support ReGIS
+Read here for a full description on [how to enable ReGIS for Windows 10 and Linux desktop machines](https://feilipu.me/2022/09/28/regis-serial-graphics-for-arduino-rc2014/).
 
-XTERM is the only known software solution supporting ReGIS commands (to be improved I'm sure). But it doesn't support ReGIS in the default build. You'll need to enable ReGIS yourself.
+## Preparing XTerm to support ReGIS
+
+XTerm is the only known software solution supporting ReGIS commands (to be improved I'm sure). But it doesn't support ReGIS in the default build. You'll need to enable ReGIS yourself.
 ``` sh
 $ sudo apt install -y libxaw7-dev libncurses-dev libxft-dev
-$ wget https://invisible-island.net/datafiles/release/xterm.tar.gz
-$ tar xf xterm.tar.gz
-$ cd xterm-373
+$ wget https://invisible-island.net/datafiles/release/XTerm.tar.gz
+$ tar xf XTerm.tar.gz
+$ cd XTerm-373
 $ ./configure --enable-regis-graphics
 $ make
 $ sudo make install
 ```
 
-As XTERM has no serial interface itself, so you'll need to use one. A suggestion is to use picocom.<br>
+As XTerm has no serial interface itself, so you'll need to use one. A suggestion is to use picocom.<br>
 It is also useful for working with Arduino, and other embedded devices, generally. First test that your installation is working as per below.
 
 ``` sh
@@ -28,12 +28,12 @@ $ picocom -b 115200 -f h /dev/ttyUSB0
 
 And, finally XTerm using VT340 emulation together with picocom.
 ``` sh
-xterm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -f h /dev/ttyUSB0
+XTerm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
 Another alternative is using XTerm VT125 emulation.
 ``` sh
-xterm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -f h /dev/ttyUSB0
+XTerm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
 ### Windows Subsystem for Linux
@@ -41,9 +41,9 @@ xterm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -f h /dev/ttyUSB
 WSL1 supports connection of Serial Devices via USB. WSL2 has some issues with this, particuarly with Windows 10.
 
 But, the supported picocom distribution for Ubuntu 22.04 Version 3.1 (for example), utilises some modern terminal capabilities that WSL does not support.
-So to avoid the use of these terminal system calls we have to use an older release of picocom. For example the [Version 2.2.2 provided with Ubuntu 18.04 LTS](https://manpages.ubuntu.com/manpages/bionic/man1/picocom.1.html). Be sure to use this older version of picocom if you are using WSL to run XTERM and picocom.
+So to avoid the use of these terminal system calls we have to use an older release of picocom. For example the [Version 2.2.2 provided with Ubuntu 18.04 LTS](https://manpages.ubuntu.com/manpages/bionic/man1/picocom.1.html). Be sure to use this older version of picocom if you are using WSL to run XTerm and picocom.
 
-The tested method of accessing XTERM on WSL is [MobaXterm](https://mobaxterm.mobatek.net/). This enhanced terminal for Windows includes an integrated Xserver. If MobaXterm is used to access WSL XTERM, its window will automatically connect to the Windows desktop.
+The tested method of accessing XTerm on WSL is [MobaXTerm](https://mobaxterm.mobatek.net/). This enhanced terminal for Windows includes an integrated Xserver. If MobaXTerm is used to access WSL XTerm, its window will automatically connect to the Windows desktop.
 
 Read here for a full description on [how to enable ReGIS for Windows 10 and Linux desktop machines](https://feilipu.me/2022/09/28/regis-serial-graphics-for-arduino-rc2014/).
 
@@ -58,7 +58,7 @@ There is a demonstration program, which should produce the below result (subject
 <td style="border: 1px solid #cccccc; padding: 6px;"><a href="https://github.com/feilipu/ReGIS/blob/main/examples/regis_demo/regis_demo.png" target="_blank"><img src="https://github.com/feilipu/ReGIS/blob/main/examples/regis_demo/regis_demo.png"/></a></td>
 </tr>
 <tr>
-<th style="border: 1px solid #cccccc; padding: 6px;"><centre>RC2014 ReGIS - Picocom in XTERM<center></th>
+<th style="border: 1px solid #cccccc; padding: 6px;"><centre>RC2014 ReGIS - Picocom in XTerm<center></th>
 </tr>
 </tbody>
 </table>
@@ -72,8 +72,8 @@ Expected output (where `^` is the `ESC` character).
 
 ## Credits
 
-For describing [how to get XTERM working with ReGIS](https://groups.google.com/g/rc2014-z80/c/fuji5iuJ3Jc/m/FNYwGGbaAQAJ), thanks Rob Gowin.<br>
-For advising on how to get [ReGIS fonts in XTERM working](https://github.com/feilipu/z88dk-libraries/commit/107c23d2f31791b0a35bfc8833a7747a84544649#diff-45390165fce0bae9bf04313a098b2a42d5d727bf90d4be040f01ec0f7fee969d), thanks Thomas Dickey.
+For describing [how to get XTerm working with ReGIS](https://groups.google.com/g/rc2014-z80/c/fuji5iuJ3Jc/m/FNYwGGbaAQAJ), thanks Rob Gowin.<br>
+For advising on how to get [ReGIS fonts in XTerm working](https://github.com/feilipu/z88dk-libraries/commit/107c23d2f31791b0a35bfc8833a7747a84544649#diff-45390165fce0bae9bf04313a098b2a42d5d727bf90d4be040f01ec0f7fee969d), thanks Thomas Dickey.
 
 ## License
 

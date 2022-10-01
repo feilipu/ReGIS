@@ -27,7 +27,7 @@ void setup() {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
     }
 
-    Serial.println("Set up now!");
+    Serial.println("Set up complete!");
 }
 
 void loop(void)
