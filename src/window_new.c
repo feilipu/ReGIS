@@ -48,7 +48,7 @@ uint8_t window_new(window_t * win, uint16_t width, uint16_t height)
         win->command = (char *)malloc(20);
         if (width && width < WIDTH_MAX) win->width = width; else win->width = WIDTH_MAX-1;
         if (height && height < HEIGHT_MAX) win->height = height; else win->height = HEIGHT_MAX-1;
-        sprintf(win->command, "\x1BP1pS(E)"); /* ESC 0x1B */
+        sprintf(win->command, "%cP1pS(E)", ASCII_ESC);
         return 1;
     }
     else
