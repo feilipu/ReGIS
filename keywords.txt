@@ -1,0 +1,88 @@
+# Syntax Coloring Map For ReGIS
+# https://arduino.github.io/arduino-cli/library-specification/#keywords
+# Formatted by a single true tab (not spaces)
+
+# Datatypes (KEYWORD1)
+offset_t	KEYWORD1
+mode_t	KEYWORD1
+pattern_t	KEYWORD1
+intensity_t	KEYWORD1
+window_t	KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+window_new	KEYWORD2
+window_reset	KEYWORD2
+window_write	KEYWORD2
+window_clear	KEYWORD2
+window_close	KEYWORD2
+draw_mode	KEYWORD2
+draw_pattern	KEYWORD2
+draw_intensity	KEYWORD2
+draw_rel	KEYWORD2
+draw_ofs	KEYWORD2
+draw_abs	KEYWORD2
+draw_pixel_rel	KEYWORD2
+draw_unpixel_rel	KEYWORD2
+draw_pixel_abs KEYWORD2
+draw_unpixel_abs	KEYWORD2
+draw_line_rel	KEYWORD2
+draw_unline_rel	KEYWORD2
+draw_line_abs	KEYWORD2
+draw_unline_abs	KEYWORD2
+draw_box	KEYWORD2
+draw_unbox	KEYWORD2
+draw_box_fill	KEYWORD2
+draw_unbox_fill	KEYWORD2
+draw_circle	KEYWORD2
+draw_uncircle	KEYWORD2
+draw_circle_fill	KEYWORD2
+draw_uncircle_fill	KEYWORD2
+draw_arc	KEYWORD2
+draw_unarc	KEYWORD2
+draw_text	KEYWORD2
+draw_free	KEYWORD2
+
+# Structures (KEYWORD3)
+window_t	KEYWORD3
+
+# Constants (LITERAL1)
+portUSE_WDTO	LITERAL1
+portTICK_PERIOD_MS	LITERAL1
+configTICK_RATE_HZ	LITERAL1
+configCPU_CLOCK_HZ	LITERAL1
+configMAX_PRIORITIES	LITERAL1
+configMINIMAL_STACK_SIZE	LITERAL1
+
+EE	LITERAL1
+NE	LITERAL1
+NN	LITERAL1
+NW	LITERAL1
+WW	LITERAL1
+SW	LITERAL1
+SS	LITERAL1
+SE	LITERAL1
+
+REP	LITERAL1
+ERA	LITERAL1
+OVL	LITERAL1
+CPL	LITERAL1
+
+P0	LITERAL1
+P1	LITERAL1
+P2	LITERAL1
+P3	LITERAL1
+P4	LITERAL1
+P5	LITERAL1
+P6	LITERAL1
+P7	LITERAL1
+P8	LITERAL1
+P9	LITERAL1
+
+D	LITERAL1
+B	LITERAL1
+R	LITERAL1
+M	LITERAL1
+G	LITERAL1
+C	LITERAL1
+Y	LITERAL1
+W	LITERAL1

@@ -1,0 +1,25 @@
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.obj
+
+# Linker output
+*.map
+
+
+# Libraries
+*.lib
+
+# Executables
+*.bin
+*.exe
+*.out
+*.app
+*.hex
+*.ihx
+
+# Debug files
+*.lis
+
