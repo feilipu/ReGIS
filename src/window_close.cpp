@@ -34,13 +34,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <HardwareSerial.h>
+
 #include "ReGIS.h"
-
-/****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char * text);
 
 /****************************************************************************/
 /***       Functions                                                      ***/
@@ -49,7 +45,7 @@ extern void appendstring(window_t * win, char * text);
 /* Close a graphics window, return to text mode */
 void window_close(window_t * win)
 {
-    fprintf(stdout, "%c%c\n", ASCII_ESC, ASCII_BSLASH); /* ESC \ */
+    Serial.print("\x1B\x5C\n"); /* ESC \ 0x1B 0x5C */
 
     free(win->command);
 }

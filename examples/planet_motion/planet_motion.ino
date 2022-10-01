@@ -124,12 +124,14 @@ cartesian_coordinates_t theSun, thePlanet;
 // the setup function runs once when you press reset or power the board
 void setup() {
 
-  // initialize serial communication at 9600 bits per second:
-  Serial.begin(9600);
-  
-  while (!Serial) {
+    // initialize serial communication at 115200 bits per second:
+    Serial.begin(115200);
+
+    while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
-  }
+    }
+
+    Serial.println("Set up now!");
 }
 
 void loop()

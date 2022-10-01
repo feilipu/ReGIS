@@ -9,33 +9,31 @@ ReGIS interprets commands that allow you to simply and efficiently control a vid
 
 XTERM is the only known software solution supporting ReGIS commands (to be improved I'm sure). But it doesn't support ReGIS in the default build. You'll need to enable ReGIS yourself.
 ``` sh
-% sudo apt install -y libxaw7-dev libncurses-dev libxft-dev
-% wget https://invisible-island.net/datafiles/release/xterm.tar.gz
-% tar xf xterm.tar.gz
-% cd xterm-373
-% ./configure --enable-regis-graphics
-% make
-% sudo make install
+$ sudo apt install -y libxaw7-dev libncurses-dev libxft-dev
+$ wget https://invisible-island.net/datafiles/release/xterm.tar.gz
+$ tar xf xterm.tar.gz
+$ cd xterm-373
+$ ./configure --enable-regis-graphics
+$ make
+$ sudo make install
 ```
 
 As XTERM has no serial interface itself, so you'll need to use one. A suggestion is to use picocom.<br>
-It is also useful for working with retrocomputers generally. First test that your installation is working as per below.
-
-Adding the `--send-cmd` option will allow the use of `xmodem` or `sx` to send binary files to the RC2014 CP/M `xmodem` from within picocom.
+It is also useful for working with Arduino, and other embedded devices, generally. First test that your installation is working as per below.
 
 ``` sh
-% sudo apt install -y picocom
-% picocom -b 115200 -f h /dev/ttyUSB0 --send-cmd "sx -vv"
+$ sudo apt install -y picocom
+$ picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
-And, finally together with VT340 emulation.
+And, finally XTerm using VT340 emulation together with picocom.
 ``` sh
-xterm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -p 2 -f h /dev/ttyUSB0 --send-cmd "sx -vv"
+xterm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
-Another alternative is using VT125 emulation.
+Another alternative is using XTerm VT125 emulation.
 ``` sh
-xterm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -p 2 -f h /dev/ttyUSB0 --send-cmd "sx -vv"
+xterm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
 ### Windows Subsystem for Linux
@@ -47,6 +45,8 @@ So to avoid the use of these terminal system calls we have to use an older relea
 
 The tested method of accessing XTERM on WSL is [MobaXterm](https://mobaxterm.mobatek.net/). This enhanced terminal for Windows includes an integrated Xserver. If MobaXterm is used to access WSL XTERM, its window will automatically connect to the Windows desktop.
 
+Read here for a full description on [how to enable ReGIS for Windows 10 and Linux desktop machines](https://feilipu.me/2022/09/28/regis-serial-graphics-for-arduino-rc2014/).
+
 ## Demonstration
 
 There is a demonstration program, which should produce the below result (subject to improvement).
@@ -55,7 +55,7 @@ There is a demonstration program, which should produce the below result (subject
 <table style="border: 2px solid #cccccc;">
 <tbody>
 <tr>
-<td style="border: 1px solid #cccccc; padding: 6px;"><a href="https://github.com/feilipu/ReGIS/examples/demo/regis_demo.png" target="_blank"><img src="https://github.com/feilipu/z88dk-libraries/blob/master/ReGIS/examples/demo/regis_demo.png"/></a></td>
+<td style="border: 1px solid #cccccc; padding: 6px;"><a href="https://github.com/feilipu/ReGIS/blob/main/examples/regis_demo/regis_demo.png" target="_blank"><img src="https://github.com/feilipu/ReGIS/blob/main/examples/regis_demo/regis_demo.png"/></a></td>
 </tr>
 <tr>
 <th style="border: 1px solid #cccccc; padding: 6px;"><centre>RC2014 ReGIS - Picocom in XTERM<center></th>

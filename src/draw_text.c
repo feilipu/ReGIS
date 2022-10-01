@@ -40,14 +40,14 @@
 /***       Private Functions                                              ***/
 /****************************************************************************/
 
-extern void appendstring(window_t * win, char * text);
+extern void appendstring(window_t * win, char const * text);
 
 /****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw text from current position */
-void draw_text(window_t * win, char * text, uint8_t size)
+void draw_text(window_t * win, char const * text, uint8_t size)
 {
     char s[10];
     sprintf(s, "T(S%.2d)\"", size);

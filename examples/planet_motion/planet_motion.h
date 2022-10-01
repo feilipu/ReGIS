@@ -17,7 +17,7 @@
 
 // macros
 
-#define sqr(x)  ((x)*(x))
+#define sqr(x)      sq(x)
 
 #define RAD(x)      ((x)*(M_PI/180.0))
 #define DEG(x)      ((x)*(180.0/M_PI))

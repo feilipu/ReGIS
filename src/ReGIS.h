@@ -254,11 +254,11 @@ void draw_unarc(window_t * win, uint16_t radius, int16_t arc);
 
 
 /* Draw text from current position */
-void draw_text(window_t * win, char * text, uint8_t size);
+void draw_text(window_t * win, char const * text, uint8_t size);
 
 
 /* Draw custom ReGIS from current position */
-void draw_free(window_t * win, char * text);
+void draw_free(window_t * win, char const * text);
 
 
 #ifdef __cplusplus

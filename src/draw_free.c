@@ -40,14 +40,14 @@
 /***       Private Functions                                              ***/
 /****************************************************************************/
 
-extern void appendstring(window_t * win, char * text);
+extern void appendstring(window_t * win, char const * text);
 
 /****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw custom ReGIS from current position */
-void draw_free(window_t * win, char * text)
+void draw_free(window_t * win, char const * text)
 {
     appendstring(win, text);
 }

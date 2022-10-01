@@ -1,5 +1,5 @@
 /*
- * window_write.c
+ * window_write.cpp
  *
  * Copyright (c) 2021 Phillip Stevens
  * Create Time: July 2021
@@ -35,6 +35,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <HardwareSerial.h>
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -44,6 +46,6 @@
 /* Write out commands */
 void window_write(window_t * win)
 {
-    fputs(win->command, stdout);
+    Serial.print(win->command);
 }
 

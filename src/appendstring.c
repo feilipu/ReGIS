@@ -41,7 +41,7 @@
 /****************************************************************************/
 
 
-void appendstring(window_t * win, char * text)
+void appendstring(window_t * win, char const * text)
 {
     int l = strlen(win->command) + strlen(text) + 1;
 
