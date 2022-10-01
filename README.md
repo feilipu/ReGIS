@@ -3,7 +3,7 @@
 
 Read here for a full description on [how to enable ReGIS for Windows 10 and Linux desktop machines](https://feilipu.me/2022/09/28/regis-serial-graphics-for-arduino-rc2014/).
 
-ReGIS interprets commands that allow you to simply and efficiently control a video monitor screen and draw pictures on the screen with lines, curves, and circles using a serial interface (USART). Also, ReGIS provides commands to include 
+ReGIS interprets commands that allow you to simply and efficiently control a video monitor screen and draw pictures on the screen with lines, curves, and circles using a serial interface (USART). Also, ReGIS provides commands to include scalable text characters in pictures. The ReGIS graphics language is designed for conciseness and easy transport of code from the host to the ReGIS device. The language consists of commands that are modified by options.
 
 ## Preparing XTERM to support ReGIS
 
