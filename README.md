@@ -10,9 +10,9 @@ Read here for a full description on [how to enable ReGIS for Windows 10 and Linu
 XTerm is the only known software solution supporting ReGIS commands (to be improved I'm sure). But it doesn't support ReGIS in the default build. You'll need to enable ReGIS yourself.
 ``` sh
 $ sudo apt install -y libxaw7-dev libncurses-dev libxft-dev
-$ wget https://invisible-island.net/datafiles/release/XTerm.tar.gz
-$ tar xf XTerm.tar.gz
-$ cd XTerm-373
+$ wget https://invisible-island.net/datafiles/release/xterm.tar.gz
+$ tar xf xterm.tar.gz
+$ cd xterm-373
 $ ./configure --enable-regis-graphics
 $ make
 $ sudo make install
@@ -28,12 +28,12 @@ $ picocom -b 115200 -f h /dev/ttyUSB0
 
 And, finally XTerm using VT340 emulation together with picocom.
 ``` sh
-XTerm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -f h /dev/ttyUSB0
+xterm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
 Another alternative is using XTerm VT125 emulation.
 ``` sh
-XTerm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -f h /dev/ttyUSB0
+xterm +u8 -geometry 132x50 -ti 125 -tn 125 -e picocom -b 115200 -f h /dev/ttyUSB0
 ```
 
 ### Windows Subsystem for Linux
