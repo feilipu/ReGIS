@@ -5,6 +5,8 @@ ReGIS interprets commands that allow you to simply and efficiently control a vid
 
 Read here for a full description on [how to enable ReGIS for Windows 10 and Linux desktop machines](https://feilipu.me/2022/09/28/regis-serial-graphics-for-arduino-rc2014/).
 
+There is a [Programmer Reference Manual for VT330/VT340 Terminals](https://vt100.net/docs/vt3xx-gp/) describing how to use ReGIS, as well as the [VT125 Primer](https://github.com/feilipu/ReGIS/blob/main/doc/EK-VT125-GI-001_VT125_ReGIS_Primer_May82.pdf) document provided here.
+
 ## Preparing XTerm to support ReGIS
 
 XTerm is the only known software solution supporting ReGIS commands (to be improved I'm sure). But it doesn't support ReGIS in the default build. You'll need to enable ReGIS yourself.
