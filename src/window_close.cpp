@@ -45,8 +45,6 @@
 /* Close a graphics window, return to text mode */
 void window_close(window_t * win)
 {
-    Serial.print("\x1B\x5C\n"); /* ESC \ 0x1B 0x5C */
-
+    Serial.write("\x1B\x5C\n"); /* ESC \ 0x1B 0x5C */
     free(win->command);
 }
-

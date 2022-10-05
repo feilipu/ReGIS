@@ -49,9 +49,8 @@ extern void appendstring(window_t * win, char const * text);
 /* Clear window */
 void window_clear(window_t * win)
 {
-    char s[12];
+    char s[6];
     sprintf(s, "S(E)");
 
     appendstring(win, s);
 }
-

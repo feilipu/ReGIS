@@ -46,6 +46,5 @@
 /* Write out commands */
 void window_write(window_t * win)
 {
-    Serial.print(win->command);
+    Serial.write(win->command);
 }
-

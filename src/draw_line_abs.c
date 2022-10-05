@@ -57,4 +57,3 @@ void draw_line_abs(window_t * win, uint16_t x, uint16_t y)
     win->y = y;
     win->x = x;
 }
-

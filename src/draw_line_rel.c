@@ -48,7 +48,7 @@ extern void appendstring(window_t * win, char const * text);
 /* Draw a line to relative position */
 void draw_line_rel(window_t * win, int16_t dx, int16_t dy)
 {
-    char s[16];
+    char s[18];
     sprintf(s, "V[][%+.3d,%+.3d]", dx, dy);
 
     appendstring(win, s);
@@ -56,4 +56,3 @@ void draw_line_rel(window_t * win, int16_t dx, int16_t dy)
     win->y += dy;
     win->x += dx;
 }
-
