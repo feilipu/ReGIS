@@ -1,5 +1,5 @@
 /*
- * Demo name   : regis_demo 
+ * Demo name   : regis_demo
  * Author      : Phillip Stevens @feilipu
  * Version     : V0.2
 */
@@ -34,6 +34,7 @@ void loop(void)
 {
 
     window_new( &mywindow, 768, 480 );
+    window_clear ( &mywindow );
 
     draw_intensity( &mywindow, _M);
 

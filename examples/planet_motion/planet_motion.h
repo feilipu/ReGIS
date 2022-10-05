@@ -4,7 +4,7 @@
 #define _PLANET_MOTION_H
 
 #ifdef __cplusplus
-    extern "C" {
+extern "C" {
 #endif
 
 #include <stdint.h>
@@ -58,4 +58,3 @@ float rev (float x);
 #endif
 
 #endif  /* _PLANET_MOTION_H  */
-

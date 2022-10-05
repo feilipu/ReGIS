@@ -1,5 +1,5 @@
 /*
- * Demo name   : planet_motion 
+ * Demo name   : planet_motion
  * Author      : Phillip Stevens @feilipu
  * Version     : V0.2
 */
@@ -126,6 +126,7 @@ void loop()
     for (d = 7671; d < (7868+(4*365)+1); ++d)                                       // January 1st, 2021 + 4 years
     {
         window_new( &mywindow, 768, 480 );                                          // open command list
+        window_clear( &mywindow );
 
         theSun.day = (float)d;
 
