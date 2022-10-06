@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -51,6 +55,19 @@ void draw_intensity(window_t * win, intensity_t intensity)
 {
     char s[8];
 
+#ifdef __AVR
+switch (intensity)
+    {
+        case _D: sprintf_P(s,PSTR("W(I(D))")); break;
+        case _B: sprintf_P(s,PSTR("W(I(B))")); break;
+        case _R: sprintf_P(s,PSTR("W(I(R))")); break;
+        case _M: sprintf_P(s,PSTR("W(I(M))")); break;
+        case _G: sprintf_P(s,PSTR("W(I(G))")); break;
+        case _C: sprintf_P(s,PSTR("W(I(C))")); break;
+        case _Y: sprintf_P(s,PSTR("W(I(Y))")); break;
+        case _W: sprintf_P(s,PSTR("W(I(W))")); break;
+    }
+#else
     switch (intensity)
     {
         case _D: sprintf(s,"W(I(D))"); break;
@@ -62,7 +79,7 @@ void draw_intensity(window_t * win, intensity_t intensity)
         case _Y: sprintf(s,"W(I(Y))"); break;
         case _W: sprintf(s,"W(I(W))"); break;
     }
+#endif
 
     appendstring(win, s);
 }
-

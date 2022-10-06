@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -51,6 +55,15 @@ void draw_mode(window_t * win, mode_t mode)
 {
     char s[6];
 
+#ifdef __AVR
+    switch (mode)
+    {
+        case _REP: sprintf_P(s,PSTR("W(R)")); break;
+        case _ERA: sprintf_P(s,PSTR("W(E)")); break;
+        case _OVL: sprintf_P(s,PSTR("W(V)")); break;
+        case _CPL: sprintf_P(s,PSTR("W(C)")); break;
+    }
+#else
     switch (mode)
     {
         case _REP: sprintf(s,"W(R)"); break;
@@ -58,7 +71,7 @@ void draw_mode(window_t * win, mode_t mode)
         case _OVL: sprintf(s,"W(V)"); break;
         case _CPL: sprintf(s,"W(C)"); break;
     }
+#endif
 
     appendstring(win, s);
 }
-

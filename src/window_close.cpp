@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include <HardwareSerial.h>
 
 #include "ReGIS.h"

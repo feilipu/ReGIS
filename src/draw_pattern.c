@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -51,6 +55,21 @@ void draw_pattern(window_t * win, pattern_t pattern)
 {
     char s[6];
 
+#ifdef __AVR
+    switch (pattern)
+    {
+        case _P0: sprintf_P(s,PSTR("W(P0)")); break;
+        case _P1: sprintf_P(s,PSTR("W(P1)")); break;
+        case _P2: sprintf_P(s,PSTR("W(P2)")); break;
+        case _P3: sprintf_P(s,PSTR("W(P3)")); break;
+        case _P4: sprintf_P(s,PSTR("W(P4)")); break;
+        case _P5: sprintf_P(s,PSTR("W(P5)")); break;
+        case _P6: sprintf_P(s,PSTR("W(P6)")); break;
+        case _P7: sprintf_P(s,PSTR("W(P7)")); break;
+        case _P8: sprintf_P(s,PSTR("W(P8)")); break;
+        case _P9: sprintf_P(s,PSTR("W(P9)")); break;
+    }
+#else
     switch (pattern)
     {
         case _P0: sprintf(s,"W(P0)"); break;
@@ -64,7 +83,7 @@ void draw_pattern(window_t * win, pattern_t pattern)
         case _P8: sprintf(s,"W(P8)"); break;
         case _P9: sprintf(s,"W(P9)"); break;
     }
+#endif
 
     appendstring(win, s);
 }
-

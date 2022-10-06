@@ -2,21 +2,21 @@
  * 3D animated graphics over the REGIS protocol
  *
  * Copyright (C) 2021 Adam Williams <broadcast at earthling dot net>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  */
 
 // project 3D coords onto 2D screen:
@@ -34,8 +34,8 @@
 // these are the demonstration options
 #define CUBE 0
 #define ICOS 1
-#define GEAR 2 // not working fully
-#define GLXGEARS 3 // not working at all, WIP
+#define GEAR 2 // not working fully on UNO
+#define GLXGEARS 3 // not working on UNO
 
 // select a demonstration from above options
 int demo = ICOS;
@@ -81,7 +81,7 @@ public:
         printf("%s", x);
         fflush(stdout);
     }
-    
+
     static void print(int x)
     {
         printf("%d", x);
@@ -97,10 +97,10 @@ public:
 		struct timeval timeout;
 		timeout.tv_sec = 0;
 		timeout.tv_usec = 0;
-		int result = select(fileno(stdin) + 1, 
-			&rfds, 
-			0, 
-			0, 
+		int result = select(fileno(stdin) + 1,
+			&rfds,
+			0,
+			0,
 			&timeout);
 
 		if(FD_ISSET(fileno(stdin), &rfds))
@@ -109,7 +109,7 @@ public:
         }
         return 0;
     }
-    
+
     static int read()
     {
         int c = getc(stdin);
@@ -130,9 +130,9 @@ public:
     float x, y, z, w;
 
     Vector() : x(0),y(0),z(0),w(1){}
-    Vector(float a, float b, float c) : 
+    Vector(float a, float b, float c) :
         x(a),y(b),z(c),w(1){}
-    Vector(float a, float b, float c, float d) : 
+    Vector(float a, float b, float c, float d) :
         x(a),y(b),z(c),w(d){}
 
 // divide all but w by m
@@ -155,7 +155,7 @@ public:
     {
         return sqrt(x*x + y*y + z*z);
     }
-    
+
     Vector Unit()
     {
         const float epsilon = 1e-6;
@@ -195,7 +195,7 @@ public:
     {
         for(int i = 0; i < 4; i++)
         {
-            printf("%f %f %f %f\n", 
+            printf("%f %f %f %f\n",
                 data[i * 4 + 0],
                 data[i * 4 + 1],
                 data[i * 4 + 2],
@@ -213,7 +213,7 @@ public:
         }
         data[0] = data[5] = data[10] = data[15] = 1.0f;
     }
-    
+
     static Matrix get_rx(float angle)
     {
         Matrix result;
@@ -246,7 +246,7 @@ public:
         result.data[5] = cos(angle);
         return result;
     }
-    
+
     static Matrix get_transform(float scale, float x, float y, float z)
     {
         Matrix result;
@@ -378,8 +378,8 @@ void manage_fps()
     static struct timespec start_time = { 0 };
     struct timespec current_time;
     clock_gettime(CLOCK_MONOTONIC, &current_time);
-    
-    int diff = current_time.tv_sec * 1000 + current_time.tv_nsec / 1e6 - 
+
+    int diff = current_time.tv_sec * 1000 + current_time.tv_nsec / 1e6 -
         start_time.tv_sec * 1000 - start_time.tv_nsec / 1e6;
     start_time = current_time;
     if(diff < 1000 / FPS)
@@ -424,8 +424,8 @@ void regis_plot(const point_t *model, int count, Matrix transform, intensity_t i
     for(int i = 0; i < count; i++)
     {
         point_t point = read_point(&ptr);
-        Vector vertex1 = Vector(point.x, 
-            point.y, 
+        Vector vertex1 = Vector(point.x,
+            point.y,
             point.z);
         Vector vertex2 = vertex1 * transform;
         vertex2.divide(vertex2.w);
@@ -443,7 +443,7 @@ void regis_plot(const point_t *model, int count, Matrix transform, intensity_t i
     }
 
     if(do_init)
-    { 
+    {
         window_write( &mywindow );
         window_close( &mywindow );
     }
@@ -467,13 +467,13 @@ void glxgears_loop()
     Matrix big_matrix;
     Matrix transform = Matrix::get_transform(1, -1, 2, 0);
     Matrix rz = Matrix::get_rz(rotz);
-    big_matrix = rz * 
-        transform * 
-        view_roty * 
-        view_rotx * 
-        user_rotx_ * 
-        user_roty_ * 
-        view_transform * 
+    big_matrix = rz *
+        transform *
+        view_roty *
+        view_rotx *
+        user_rotx_ *
+        user_roty_ *
+        view_transform *
         clipMatrix;
 
     regis_plot(glxgear1, sizeof(glxgear1) / sizeof(point_t), big_matrix, _R, 0);
@@ -483,31 +483,31 @@ void glxgears_loop()
 
     transform = Matrix::get_transform(1, 5.2, 2, 0);
     rz = Matrix::get_rz(-2.0 * rotz + 9.0 / 180 * M_PI);
-    big_matrix = rz * 
-        transform * 
-        view_roty * 
-        view_rotx * 
-        user_rotx_ * 
-        user_roty_ * 
-        view_transform * 
+    big_matrix = rz *
+        transform *
+        view_roty *
+        view_rotx *
+        user_rotx_ *
+        user_roty_ *
+        view_transform *
         clipMatrix;
 
     regis_plot(glxgear2, sizeof(glxgear2) / sizeof(point_t), big_matrix, _G, 0);
-   
+
     window_write( &mywindow );
     window_reset( &mywindow );
 
     transform = Matrix::get_transform(1, -1.1, -4.2, 0);
     rz = Matrix::get_rz(-2.0 * rotz + 30.0 / 180 * M_PI);
-    big_matrix = rz * 
-        transform * 
-        view_roty * 
-        view_rotx * 
-        user_rotx_ * 
-        user_roty_ * 
-        view_transform * 
+    big_matrix = rz *
+        transform *
+        view_roty *
+        view_rotx *
+        user_rotx_ *
+        user_roty_ *
+        view_transform *
         clipMatrix;
- 
+
     regis_plot(glxgear3, sizeof(glxgear3) / sizeof(point_t), big_matrix, _B, 0);
 
     window_write( &mywindow );
@@ -541,11 +541,11 @@ void gear_loop()
     Matrix ry = Matrix::get_ry(roty);
 
     Matrix big_matrix;
-    big_matrix = rz * 
-        ry * 
-        user_rotx_ * 
-        user_roty_ * 
-        transform * 
+    big_matrix = rz *
+        ry *
+        user_rotx_ *
+        user_roty_ *
+        transform *
         clipMatrix;
     regis_plot(gear, sizeof(gear) / sizeof(point_t), big_matrix, _W, 1);
 
@@ -577,11 +577,11 @@ void cube_loop()
 
 
     Matrix big_matrix;
-    big_matrix = rz * 
-        ry * 
-        user_rotx_ * 
-        user_roty_ * 
-        transform * 
+    big_matrix = rz *
+        ry *
+        user_rotx_ *
+        user_roty_ *
+        transform *
         clipMatrix;
     regis_plot(box, sizeof(box) / sizeof(point_t), big_matrix, _W, 1);
 
@@ -613,12 +613,12 @@ void icos_loop()
 
 
     Matrix big_matrix;
-    big_matrix = rx * 
-        ry * 
-        rz * 
-        user_rotx_ * 
-        user_roty_ * 
-        transform * 
+    big_matrix = rx *
+        ry *
+        rz *
+        user_rotx_ *
+        user_roty_ *
+        transform *
         clipMatrix;
 
     regis_plot(icos, sizeof(icos) / sizeof(point_t), big_matrix, _W, 1);
@@ -645,7 +645,7 @@ void setup() {
 
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
-    }    
+    }
 
     begin_projection();
     clear_screen();
@@ -689,9 +689,9 @@ int main()
     signal(SIGINT, sig_catch);
     signal(SIGQUIT, sig_catch);
     signal(SIGTERM, sig_catch);
-    
+
     setup();
-    
+
     while(1)
     {
         loop();
@@ -699,8 +699,3 @@ int main()
     return 0;
 }
 #endif
-
-
-
-
-

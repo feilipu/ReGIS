@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -48,7 +52,12 @@ uint8_t window_new(window_t * win, uint16_t width, uint16_t height)
         win->command = (char *)malloc(20);
         if (width && width < WIDTH_MAX) win->width = width; else win->width = WIDTH_MAX-1;
         if (height && height < HEIGHT_MAX) win->height = height; else win->height = HEIGHT_MAX-1;
+
+#ifdef __AVR
+        sprintf_P(win->command, PSTR("%cP1p"), ASCII_ESC);
+#else
         sprintf(win->command, "%cP1p", ASCII_ESC);
+#endif
         return 1;
     }
     else

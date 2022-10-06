@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -50,7 +54,12 @@ extern void appendstring(window_t * win, char const * text);
 void window_clear(window_t * win)
 {
     char s[6];
+
+#ifdef __AVR
+    sprintf_P(s, PSTR("S(E)"));
+#else
     sprintf(s, "S(E)");
+#endif
 
     appendstring(win, s);
 }

@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -50,9 +54,14 @@ extern void appendstring(window_t * win, char const * text);
 void draw_text(window_t * win, char const * text, uint8_t size)
 {
     char s[10];
+
+#ifdef __AVR
+    sprintf_P(s, PSTR("T(S%.2d)\""), size);
+#else
     sprintf(s, "T(S%.2d)\"", size);
+#endif
+
     appendstring(win, s);
     appendstring(win, text);
     appendstring(win, "\"");
 }
-

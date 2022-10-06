@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -50,8 +54,12 @@ extern void appendstring(window_t * win, char const * text);
 void draw_circle_fill(window_t * win, uint16_t radius)
 {
     char s[16];
+
+#ifdef __AVR
+    sprintf_P(s, PSTR("C(W(S1))[%+.3d]"), radius);
+#else
     sprintf(s, "C(W(S1))[%+.3d]", radius);
+#endif
 
     appendstring(win, s);
 }
-

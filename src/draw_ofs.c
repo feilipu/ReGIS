@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __AVR
+#include <avr/pgmspace.h>
+#endif
+
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -51,7 +55,12 @@ void draw_ofs(window_t * win, uint16_t d, offset_t offset)
 {
     char s[14];
     uint16_t hypot;
+
+#ifdef __AVR
+    sprintf_P(s, PSTR("P(W(M%d))%d"), d, (uint8_t)offset);
+#else
     sprintf(s, "P(W(M%d))%d", d, (uint8_t)offset);
+#endif
 
     appendstring(win, s);
 
@@ -69,4 +78,3 @@ void draw_ofs(window_t * win, uint16_t d, offset_t offset)
         case _SE: win->y += hypot; win->x += hypot; break;
     }
 }
-
