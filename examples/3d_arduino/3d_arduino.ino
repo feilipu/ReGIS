@@ -52,6 +52,7 @@ float user_roty = 0;
 #define FPS 15 // max FPS
 
 #ifndef __AVR
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -62,7 +63,6 @@ float user_roty = 0;
 #include <termios.h>
 
 #define PROGMEM
-
 
 class Serial_
 {
@@ -173,6 +173,7 @@ inline float Dot(const Vector& v1, const Vector& v2)
 }
 
 #define MATRIX_SIZE 16
+
 class Matrix
 {
 public:
@@ -202,8 +203,8 @@ public:
                 data[i * 4 + 3]);
         }
     }
-#endif
 
+#endif
 
     void identity()
     {
@@ -316,27 +317,11 @@ inline Vector operator*(const Vector& v, const Matrix& m)
 
 window_t mywindow;
 
-void exit_regis()
-{
-    Serial.print("\e\\");
-}
-
-void regis_begin_poly(Vector &start)
-{
-    draw_abs( &mywindow, (uint16_t)start.x, (uint16_t)start.y );
-}
-
-void regis_add_poly(Vector &end)
-{
-    draw_line_abs( &mywindow, (uint16_t)end.x, (uint16_t)end.y );
-}
-
 // VT100 codes
 void clear_screen()
 {
     Serial.print("\e[2J");
 }
-
 
 // create the matrix which transforms from 3D to 2D
 Matrix clipMatrix;
@@ -364,6 +349,7 @@ Vector project(Vector src)
 }
 
 #ifndef __AVR
+
 point_t read_point(unsigned char **ptr)
 {
     point_t result;
@@ -434,11 +420,11 @@ void regis_plot(const point_t *model, int count, Matrix transform, intensity_t i
         vertex2.y = (vertex2.y * (float)H) / (2.0f * vertex2.w) + halfHeight;
         if(point.begin_poly)
         {
-            regis_begin_poly(vertex2);
+            draw_abs( &mywindow, (uint16_t)vertex2.x, (uint16_t)vertex2.y );
         }
         else
         {
-            regis_add_poly(vertex2);
+            draw_line_abs( &mywindow, (uint16_t)vertex2.x, (uint16_t)vertex2.y );
         }
     }
 
@@ -516,7 +502,7 @@ void glxgears_loop()
     if(animate)
     {
         rotz += 2.0 / 180 * M_PI;
-//        roty += step;
+//      roty += step;
         if((step > 0 && roty >= 45.0 / 180 * M_PI) ||
             (step < 0 && roty <= -45.0 / 180 * M_PI))
         {
@@ -552,7 +538,7 @@ void gear_loop()
     if(animate)
     {
         rotz += 2.0 / 360 * M_PI * 2;
-//        roty += step2;
+//      roty += step2;
         if((step2 > 0 && roty >= 45.0 / 180 * M_PI) ||
             (step2 < 0 && roty <= -45.0 / 180 * M_PI))
         {
@@ -594,7 +580,7 @@ void cube_loop()
     if(animate)
     {
         rotz += 2.0 / 360 * M_PI * 2;
-//        roty += .5 / 360 * M_PI * 2;
+//      roty += .5 / 360 * M_PI * 2;
     }
 }
 
@@ -623,17 +609,13 @@ void icos_loop()
 
     regis_plot(icos, sizeof(icos) / sizeof(point_t), big_matrix, _W, 1);
 
-
-
 #ifndef __AVR
     manage_fps();
-#else
-//    delay(50);
 #endif
 
     if(animate)
     {
-//        rotz += .25 / 360 * M_PI * 2;
+//      rotz += .25 / 360 * M_PI * 2;
         roty += 2.0 / 360 * M_PI * 2;
     }
 }
@@ -668,17 +650,18 @@ void loop() {
             break;
     }
 }
+
 #ifndef __AVR
 
 void sig_catch(int sig)
 {
-// reset the console
-  window_close( &mywindow );
-	struct termios info;
-	tcgetattr(fileno(stdin), &info);
-	info.c_lflag |= ICANON;
-	info.c_lflag |= ECHO;
-	tcsetattr(fileno(stdin), TCSANOW, &info);
+    // reset the console
+    window_close( &mywindow );
+    struct termios info;
+    tcgetattr(fileno(stdin), &info);
+    info.c_lflag |= ICANON;
+    info.c_lflag |= ECHO;
+    tcsetattr(fileno(stdin), TCSANOW, &info);
     exit(0);
 }
 
@@ -696,6 +679,7 @@ int main()
     {
         loop();
     }
+
     return 0;
 }
 #endif
