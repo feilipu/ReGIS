@@ -315,18 +315,6 @@ void begin_projection()
     clipMatrix.SetupClipMatrix(FOV * (M_PI / 180.0f), aspect, NEAR, FAR);
 }
 
-// project a point from 3D to 2D
-Vector project(Vector src)
-{
-    src = src * clipMatrix;
-/* Don't get confused here. I assume the scale leaves v.w alone.*/
-    src.scale(1/(src.w));
-/* TODO: Clipping here */
-    src.x = (src.x * (float)W) / (2.0f * src.w) + halfWidth;
-    src.y = (src.y * (float)H) / (2.0f * src.w) + halfHeight;
-    return src;
-}
-
 #ifndef __AVR
 
 point_t read_point(unsigned char **ptr)
@@ -393,7 +381,7 @@ void regis_plot(const point_t *model, int count, Matrix transform, intensity_t i
             point.y,
             point.z);
         Vector vertex2 = vertex1 * transform;
-        vertex2.scale(1/vertex2.w);
+        vertex2.scale(1/(vertex2.w));
 /* TODO: Clipping here */
         vertex2.x = (vertex2.x * (float)W) / (2.0f * vertex2.w) + halfWidth;
         vertex2.y = (vertex2.y * (float)H) / (2.0f * vertex2.w) + halfHeight;
@@ -559,7 +547,7 @@ void cube_loop()
     if(animate)
     {
         rotz += 2.0 / 360 * M_PI * 2;
-//      roty += .5 / 360 * M_PI * 2;
+        roty += .5 / 360 * M_PI * 2;
     }
 }
 
@@ -594,7 +582,7 @@ void icos_loop()
 
     if(animate)
     {
-//      rotz += .25 / 360 * M_PI * 2;
+        rotz += .25 / 360 * M_PI * 2;
         roty += 2.0 / 360 * M_PI * 2;
     }
 }
