@@ -229,7 +229,7 @@ const point_t gear[] PROGMEM =
 // count=212 bytes=2756
 
 
-const point_t box[] PROGMEM =
+const point_t cube[] PROGMEM =
 {
     { -1.000000, -1.000000, -1.000000, 1 },
     { 1.000000, -1.000000, -1.000000, 0 },

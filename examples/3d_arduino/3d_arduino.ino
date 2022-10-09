@@ -34,8 +34,8 @@
 // these are the demonstration options
 #define CUBE 0
 #define ICOS 1
-#define GEAR 2 // not working fully on UNO
-#define GLXGEARS 3 // not working on UNO
+#define GEAR 2 // not working fully on UNO, insufficient RAM
+#define GLXGEARS 3 // not working on UNO, insufficient RAM
 
 // select a demonstration from above options
 int demo = ICOS;
@@ -135,42 +135,14 @@ public:
     Vector(float a, float b, float c, float d) :
         x(a),y(b),z(c),w(d){}
 
-// divide all but w by m
-    void divide(float m)
+// scale all but w by m
+    void scale(float m)
     {
-        x = x / m;
-        y = y / m;
-        z = z / m;
-    }
-
-// divide all but w by m
-    Vector divide2(float m)
-    {
-        Vector dst(x / m, m / x, z / m);
-        return dst;
-    }
-
-    /* Assume proper operator overloads here, with vectors and scalars */
-    float Length() const
-    {
-        return sqrt(x*x + y*y + z*z);
-    }
-
-    Vector Unit()
-    {
-        const float epsilon = 1e-6;
-        float mag = Length();
-        if(mag < epsilon){
-            return *this;
-        }
-        return this->divide2(mag);
+        x = x * m;
+        y = y * m;
+        z = z * m;
     }
 };
-
-inline float Dot(const Vector& v1, const Vector& v2)
-{
-    return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
-}
 
 #define MATRIX_SIZE 16
 
@@ -184,10 +156,7 @@ public:
 
     void clear()
     {
-        for(int i = 0; i < MATRIX_SIZE; i++)
-        {
-            data[i] = 0;
-        }
+        data[MATRIX_SIZE] = {0};
     }
 
 #ifndef __AVR
@@ -208,53 +177,57 @@ public:
 
     void identity()
     {
-        for(int i = 0; i < MATRIX_SIZE; i++)
-        {
-            data[i] = 0;
-        }
+        data[MATRIX_SIZE] = {0};
         data[0] = data[5] = data[10] = data[15] = 1.0f;
     }
 
     static Matrix get_rx(float angle)
     {
+        float cos_angle = cos(angle);
+        float sin_angle = sin(angle);
         Matrix result;
+
         result.identity();
-        result.data[5] = cos(angle);
-        result.data[6] = -sin(angle);
-        result.data[9] = sin(angle);
-        result.data[10] = cos(angle);
+        result.data[5] = cos_angle;
+        result.data[6] = -sin_angle;
+        result.data[9] = sin_angle;
+        result.data[10] = cos_angle;
         return result;
     }
 
     static Matrix get_ry(float angle)
     {
+        float cos_angle = cos(angle);
+        float sin_angle = sin(angle);
         Matrix result;
+
         result.identity();
-        result.data[0] = cos(angle);
-        result.data[2] = sin(angle);
-        result.data[8] = -sin(angle);
-        result.data[10] = cos(angle);
+        result.data[0] = cos_angle;
+        result.data[2] = sin_angle;
+        result.data[8] = -sin_angle;
+        result.data[10] = cos_angle;
         return result;
     }
 
     static Matrix get_rz(float angle)
     {
+        float cos_angle = cos(angle);
+        float sin_angle = sin(angle);
         Matrix result;
+
         result.identity();
-        result.data[0] = cos(angle);
-        result.data[1] = -sin(angle);
-        result.data[4] = sin(angle);
-        result.data[5] = cos(angle);
+        result.data[0] = cos_angle;
+        result.data[1] = -sin_angle;
+        result.data[4] = sin_angle;
+        result.data[5] = cos_angle;
         return result;
     }
 
-    static Matrix get_transform(float scale, float x, float y, float z)
+    static Matrix get_translate(float x, float y, float z)
     {
         Matrix result;
+
         result.identity();
-        result.data[0] = scale; // Sx
-        result.data[5] = scale; // Sy
-        result.data[10] = scale; // Sz
         result.data[12] = x; // Tx
         result.data[13] = y; // Ty
         result.data[14] = z; // Tz
@@ -340,8 +313,8 @@ void begin_projection()
 Vector project(Vector src)
 {
     src = src * clipMatrix;
-/* Don't get confused here. I assume the divide leaves v.w alone.*/
-    src.divide(src.w);
+/* Don't get confused here. I assume the scale leaves v.w alone.*/
+    src.scale(1/(src.w));
 /* TODO: Clipping here */
     src.x = (src.x * (float)W) / (2.0f * src.w) + halfWidth;
     src.y = (src.y * (float)H) / (2.0f * src.w) + halfHeight;
@@ -414,7 +387,7 @@ void regis_plot(const point_t *model, int count, Matrix transform, intensity_t i
             point.y,
             point.z);
         Vector vertex2 = vertex1 * transform;
-        vertex2.divide(vertex2.w);
+        vertex2.scale(1/vertex2.w);
 /* TODO: Clipping here */
         vertex2.x = (vertex2.x * (float)W) / (2.0f * vertex2.w) + halfWidth;
         vertex2.y = (vertex2.y * (float)H) / (2.0f * vertex2.w) + halfHeight;
@@ -448,10 +421,10 @@ void glxgears_loop()
     Matrix user_roty_ = Matrix::get_ry(user_roty);
     Matrix view_rotx = Matrix::get_rx(0.0 / 180 * M_PI);
     Matrix view_roty = Matrix::get_ry(roty);
-    Matrix view_transform = Matrix::get_transform(1, 0, 1, 20);
+    Matrix view_transform = Matrix::get_translate(0, 1, 20);
 
     Matrix big_matrix;
-    Matrix transform = Matrix::get_transform(1, -1, 2, 0);
+    Matrix transform = Matrix::get_translate(-1, 2, 0);
     Matrix rz = Matrix::get_rz(rotz);
     big_matrix = rz *
         transform *
@@ -467,7 +440,7 @@ void glxgears_loop()
     window_write( &mywindow );
     window_reset( &mywindow );
 
-    transform = Matrix::get_transform(1, 5.2, 2, 0);
+    transform = Matrix::get_translate(5.2, 2, 0);
     rz = Matrix::get_rz(-2.0 * rotz + 9.0 / 180 * M_PI);
     big_matrix = rz *
         transform *
@@ -483,7 +456,7 @@ void glxgears_loop()
     window_write( &mywindow );
     window_reset( &mywindow );
 
-    transform = Matrix::get_transform(1, -1.1, -4.2, 0);
+    transform = Matrix::get_translate(-1.1, -4.2, 0);
     rz = Matrix::get_rz(-2.0 * rotz + 30.0 / 180 * M_PI);
     big_matrix = rz *
         transform *
@@ -520,7 +493,7 @@ void gear_loop()
     static float rotz = 0;
     static float roty = 0;
     static float step2 = 1.0 / 180 * M_PI;
-    Matrix transform = Matrix::get_transform(1, 0, 0, 8);
+    Matrix transform = Matrix::get_translate(0, 0, 8);
     Matrix user_rotx_ = Matrix::get_rx(user_rotx);
     Matrix user_roty_ = Matrix::get_ry(user_roty);
     Matrix rz = Matrix::get_rz(rotz);
@@ -555,7 +528,7 @@ void cube_loop()
 {
     static float rotz = 0;
     static float roty = 0;
-    Matrix transform = Matrix::get_transform(1, 0, 0, 10);
+    Matrix transform = Matrix::get_translate(0, 0, 10);
     Matrix user_rotx_ = Matrix::get_rx(user_rotx);
     Matrix user_roty_ = Matrix::get_ry(user_roty);
     Matrix rz = Matrix::get_rz(rotz);
@@ -569,7 +542,7 @@ void cube_loop()
         user_roty_ *
         transform *
         clipMatrix;
-    regis_plot(box, sizeof(box) / sizeof(point_t), big_matrix, _W, 1);
+    regis_plot(cube, sizeof(cube) / sizeof(point_t), big_matrix, _W, 1);
 
 #ifndef __AVR
     manage_fps();
@@ -590,7 +563,7 @@ void icos_loop()
 {
     static float rotz = 0;
     static float roty = 0;
-    Matrix transform = Matrix::get_transform(1, 0, 0, 8);
+    Matrix transform = Matrix::get_translate(0, 0, 8);
     Matrix rz = Matrix::get_rz(rotz);
     Matrix user_rotx_ = Matrix::get_rx(user_rotx);
     Matrix user_roty_ = Matrix::get_ry(user_roty);
