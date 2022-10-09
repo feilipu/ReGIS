@@ -156,7 +156,10 @@ public:
 
     void clear()
     {
-        data[MATRIX_SIZE] = {0};
+        for(uint8_t i = 0; i < MATRIX_SIZE; ++i)
+        {
+            data[i] = 0;
+        }
     }
 
 #ifndef __AVR
@@ -177,7 +180,10 @@ public:
 
     void identity()
     {
-        data[MATRIX_SIZE] = {0};
+        for(uint8_t i = 0; i < MATRIX_SIZE; ++i)
+        {
+            data[i] = 0;
+        }
         data[0] = data[5] = data[10] = data[15] = 1.0f;
     }
 
