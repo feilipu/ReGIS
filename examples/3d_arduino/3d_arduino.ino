@@ -310,8 +310,8 @@ float halfHeight;
 void begin_projection()
 {
     float aspect = (float)W / (float)H;
-    halfWidth = (float)W * 0.5f;
-    halfHeight = (float)H * 0.5f;
+    halfWidth = (float)WIDTH_MAX * 0.5f;
+    halfHeight = (float)HEIGHT_MAX * 0.5f;
     clipMatrix.SetupClipMatrix(FOV * (M_PI / 180.0f), aspect, NEAR, FAR);
 }
 
@@ -469,7 +469,7 @@ void glxgears_loop()
     if(animate)
     {
         rotz += 2.0 / 180 * M_PI;
-//      roty += step;
+        roty += step;
         if((step > 0 && roty >= 45.0 / 180 * M_PI) ||
             (step < 0 && roty <= -45.0 / 180 * M_PI))
         {
@@ -505,7 +505,7 @@ void gear_loop()
     if(animate)
     {
         rotz += 2.0 / 360 * M_PI * 2;
-//      roty += step2;
+        roty += step2;
         if((step2 > 0 && roty >= 45.0 / 180 * M_PI) ||
             (step2 < 0 && roty <= -45.0 / 180 * M_PI))
         {
