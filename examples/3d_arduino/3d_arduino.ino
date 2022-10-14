@@ -1,5 +1,5 @@
 /*
- * 3D animated graphics over the REGIS protocol for z88dk Z80 systems
+ * 3D animated graphics over the REGIS protocol for Arduino systems
  *
  * Copyright (c) 2022 Phillip Stevens
  *
@@ -95,7 +95,7 @@ void clear_screen(void)
 }
 
 
-void setupclip_matrix(matrix_t * matrix, float fov, float aspect_ratio, float near, float far)
+void setup_clip_matrix(matrix_t * matrix, float fov, float aspect_ratio, float near, float far)
 {
     float f = 1.0/tan(fov * 0.5);
 
@@ -114,7 +114,7 @@ void begin_projection()
 {
     half_width = (float)WIDTH_MAX * 0.5;
     half_height = (float)HEIGHT_MAX * 0.5;
-    setupclip_matrix(&clip_matrix, FOV * (M_PI / 180.0), (float)W/(float)H, NEAR, FAR);
+    setup_clip_matrix(&clip_matrix, FOV * (M_PI / 180.0), (float)W/(float)H, NEAR, FAR);
 }
 
 
