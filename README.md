@@ -7,6 +7,9 @@ Read here for a full description on [how to enable ReGIS for Windows 10 and Linu
 
 There is a [Programmer Reference Manual for VT330/VT340 Terminals](https://vt100.net/docs/vt3xx-gp/) describing how to use ReGIS, as well as the [VT125 Primer](https://github.com/feilipu/ReGIS/blob/main/doc/EK-VT125-GI-001_VT125_ReGIS_Primer_May82.pdf) document provided here.
 
+Homogeneous coordinates are ubiquitous in computer graphics because they allow common vector operations such as translation, rotation, scaling and perspective projection to be represented as a matrix by which the vector is multiplied. By the chain rule, any sequence of such operations can be multiplied out into a single matrix, allowing simple and efficient processing.<br>
+Basic homogeneous coordinate vector and matrix operations are included in this library.
+
 ## Preparing XTerm to support ReGIS
 
 XTerm is the only known software solution supporting ReGIS commands (to be improved I'm sure). But it doesn't support ReGIS in the default build. You'll need to enable ReGIS yourself.

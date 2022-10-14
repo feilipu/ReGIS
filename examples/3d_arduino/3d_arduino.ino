@@ -1,5 +1,9 @@
 /*
- * 3D animated graphics over the REGIS protocol
+ * 3D animated graphics over the REGIS protocol for z88dk Z80 systems
+ *
+ * Copyright (c) 2022 Phillip Stevens
+ *
+ * Derived from original C++ code by:
  *
  * Copyright (C) 2021 Adam Williams <broadcast at earthling dot net>
  *
@@ -19,37 +23,43 @@
  *
  */
 
-// project 3D coords onto 2D screen:
-// https://stackoverflow.com/questions/724219/how-to-convert-a-3d-point-into-2d-perspective-projection
+/*
+ * 3D homogeneous coordinate definition
+ * https://en.wikipedia.org/wiki/Homogeneous_coordinates
+ *
+ * 3D Clipping in Homogeneous Coordinates
+ * https://chaosinmotion.com/2016/05/22/3d-clipping-in-homogeneous-coordinates/
+ *
+ * project 3D coords onto 2D screen
+ * https://stackoverflow.com/questions/724219/how-to-convert-a-3d-point-into-2d-perspective-projection
+ *
+ * transformation matrix
+ * https://www.tutorialspoint.com/computer_graphics/3d_transformation.htm
+ *
+ */
 
-// transformation matrix:
-// https://www.tutorialspoint.com/computer_graphics/3d_transformation.htm
-
-// to set the terminal resolution:
-// echo 'xterm*regisScreenSize:640x480' | xrdb -merge
-// echo 'xterm*regisScreenSize' | xrdb -remove
-// start new xterm after xrdb
-
+// display using XTerm & picocom
+// xterm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -p 2 -f h /dev/ttyUSB0
 
 // these are the demonstration options
-#define CUBE 0
-#define ICOS 1
-#define GEAR 2 // not working fully on UNO, insufficient RAM
-#define GLXGEARS 3 // not working on UNO, insufficient RAM
+#define CUBE '1'
+#define ICOS '2'
+#define GEAR '3'        // not working on UNO, insufficient RAM
+#define GLXGEARS '4'    // not working on UNO, insufficient RAM
 
-// select a demonstration from above options
-int demo = ICOS;
+uint8_t demo = ICOS;    // select a demonstration from above options
 
-int animate = 1;
+uint8_t animate = 1;
+
 float user_rotx = 0;
 float user_roty = 0;
 
 #define W 480
 #define H 480
-#define NEAR -100
-#define FAR 100
-#define FOV 3.0 // degrees
-#define FPS 15 // max FPS
+#define NEAR -100.0
+#define FAR 100.0
+#define FOV 3.0         // degrees
+#define FPS 15          // max FPS
 
 #ifndef __AVR
 
@@ -60,273 +70,63 @@ float user_roty = 0;
 #include <signal.h>
 #include <unistd.h>
 #include <time.h>
-#include <termios.h>
 
 #define PROGMEM
 
-class Serial_
-{
-public:
-    static void begin(int x)
-    {
-	    struct termios info;
-	    tcgetattr(fileno(stdin), &info);
-	    info.c_lflag &= ~ICANON;
-	    info.c_lflag &= ~ECHO;
-	    tcsetattr(fileno(stdin), TCSANOW, &info);
-    }
-
-    static void print(const char *x)
-    {
-        printf("%s", x);
-        fflush(stdout);
-    }
-
-    static void print(int x)
-    {
-        printf("%d", x);
-        fflush(stdout);
-    }
-
-    static int available()
-    {
-        fd_set rfds;
-		FD_ZERO(&rfds);
-		FD_SET(fileno(stdin), &rfds);
-		FD_SET(0, &rfds);
-		struct timeval timeout;
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 0;
-		int result = select(fileno(stdin) + 1,
-			&rfds,
-			0,
-			0,
-			&timeout);
-
-		if(FD_ISSET(fileno(stdin), &rfds))
-        {
-            return 1;
-        }
-        return 0;
-    }
-
-    static int read()
-    {
-        int c = getc(stdin);
-        return c;
-    }
-
-};
-
-Serial_ Serial;
-
 #endif // !__AVR
+
+#include <ReGIS.h>      // ReGIS library
+#include "3d.h"         // 3D library
 
 #include "models.h"
 
-class Vector
-{
-public:
-    float x, y, z, w;
+float half_width;
+float half_height;
 
-    Vector() : x(0),y(0),z(0),w(1){}
-    Vector(float a, float b, float c) :
-        x(a),y(b),z(c),w(1){}
-    Vector(float a, float b, float c, float d) :
-        x(a),y(b),z(c),w(d){}
+// create the matrix which transforms from 3D to 2D
+matrix_t clip_matrix;
 
-// scale all but w by m
-    void scale(float m)
-    {
-        x = x * m;
-        y = y * m;
-        z = z * m;
-    }
-};
+// set up the display window for REGIS library
+window_t my_window;
 
-#define MATRIX_SIZE 16
-
-class Matrix
-{
-public:
-    Matrix()
-    {
-        clear();
-    }
-
-    void clear()
-    {
-        for(uint8_t i = 0; i < MATRIX_SIZE; ++i)
-        {
-            data[i] = 0;
-        }
-    }
-
-#ifndef __AVR
-
-    void dump()
-    {
-        for(int i = 0; i < 4; i++)
-        {
-            printf("%f %f %f %f\n",
-                data[i * 4 + 0],
-                data[i * 4 + 1],
-                data[i * 4 + 2],
-                data[i * 4 + 3]);
-        }
-    }
-
-#endif
-
-    void identity()
-    {
-        for(uint8_t i = 0; i < MATRIX_SIZE; ++i)
-        {
-            data[i] = 0;
-        }
-        data[0] = data[5] = data[10] = data[15] = 1.0f;
-    }
-
-    static Matrix get_rx(float angle)
-    {
-        float cos_angle = cos(angle);
-        float sin_angle = sin(angle);
-        Matrix result;
-
-        result.identity();
-        result.data[5] = cos_angle;
-        result.data[6] = -sin_angle;
-        result.data[9] = sin_angle;
-        result.data[10] = cos_angle;
-        return result;
-    }
-
-    static Matrix get_ry(float angle)
-    {
-        float cos_angle = cos(angle);
-        float sin_angle = sin(angle);
-        Matrix result;
-
-        result.identity();
-        result.data[0] = cos_angle;
-        result.data[2] = sin_angle;
-        result.data[8] = -sin_angle;
-        result.data[10] = cos_angle;
-        return result;
-    }
-
-    static Matrix get_rz(float angle)
-    {
-        float cos_angle = cos(angle);
-        float sin_angle = sin(angle);
-        Matrix result;
-
-        result.identity();
-        result.data[0] = cos_angle;
-        result.data[1] = -sin_angle;
-        result.data[4] = sin_angle;
-        result.data[5] = cos_angle;
-        return result;
-    }
-
-    static Matrix get_translate(float x, float y, float z)
-    {
-        Matrix result;
-
-        result.identity();
-        result.data[12] = x; // Tx
-        result.data[13] = y; // Ty
-        result.data[14] = z; // Tz
-        return result;
-    }
-
-    Matrix operator*(const Matrix& m)
-    {
-        Matrix dst;
-        int col;
-        for(int y = 0; y < 4; ++y){
-            col = y * 4;
-            for(int x = 0; x < 4; ++x)
-            {
-                for(int i = 0; i < 4; ++i)
-                {
-                    dst.data[col + x] += data[col + i] * m.data[i * 4 + x];
-                }
-            }
-        }
-        return dst;
-    }
-    Matrix& operator*=(const Matrix& m)
-    {
-        *this = (*this) * m;
-        return *this;
-    }
-
-    /* The interesting stuff */
-    void SetupClipMatrix(float fov, float aspectRatio, float near, float far)
-    {
-        identity();
-        float f = 1.0f / tan(fov * 0.5f);
-        data[0] = f * aspectRatio;
-        data[5] = f;
-        data[10] = (far + near) / (far - near);
-        data[11] = 1.0f; /* this 'plugs' the old z into w */
-        data[14] = (2.0f * near * far) / (near - far);
-        data[15] = 0.0f;
-    }
-
-    float data[MATRIX_SIZE];
-};
-
-
-// Must declare function prototype with user class to compile in Arduino
-inline Vector operator*(const Vector& v, const Matrix& m);
-inline Vector operator*(const Vector& v, const Matrix& m)
-{
-    Vector dst;
-    dst.x = v.x*m.data[0] + v.y*m.data[4] + v.z*m.data[8 ] + v.w*m.data[12];
-    dst.y = v.x*m.data[1] + v.y*m.data[5] + v.z*m.data[9 ] + v.w*m.data[13];
-    dst.z = v.x*m.data[2] + v.y*m.data[6] + v.z*m.data[10] + v.w*m.data[14];
-    dst.w = v.x*m.data[3] + v.y*m.data[7] + v.z*m.data[11] + v.w*m.data[15];
-    return dst;
-}
-
-// REGIS library
-#include <ReGIS.h>
-
-window_t mywindow;
-
-// VT100 codes
-void clear_screen()
+void clear_screen(void)
 {
     Serial.print("\e[2J");
 }
 
-// create the matrix which transforms from 3D to 2D
-Matrix clipMatrix;
-float halfWidth;
-float halfHeight;
+
+void setupclip_matrix(matrix_t * matrix, float fov, float aspect_ratio, float near, float far)
+{
+    float f = 1.0/tan(fov * 0.5);
+
+    identity_m( matrix );
+
+    matrix->e[0] = f * aspect_ratio;
+    matrix->e[5] = f;
+    matrix->e[10] = (far + near) / (far - near);
+    matrix->e[11] = 1.0; /* this 'plugs' the old z into w */
+    matrix->e[14] = (near * far * 2.0) / (near - far);
+    matrix->e[15] = 0.0;
+}
+
 
 void begin_projection()
 {
-    float aspect = (float)W / (float)H;
-    halfWidth = (float)WIDTH_MAX * 0.5f;
-    halfHeight = (float)HEIGHT_MAX * 0.5f;
-    clipMatrix.SetupClipMatrix(FOV * (M_PI / 180.0f), aspect, NEAR, FAR);
+    half_width = (float)WIDTH_MAX * 0.5;
+    half_height = (float)HEIGHT_MAX * 0.5;
+    setupclip_matrix(&clip_matrix, FOV * (M_PI / 180.0), (float)W/(float)H, NEAR, FAR);
 }
+
 
 #ifndef __AVR
 
-point_t read_point(unsigned char **ptr)
+void read_point(point_t * point, unsigned char ** ptr)
 {
-    point_t result;
-    unsigned char *buffer = (unsigned char*)&result;
-    memcpy(buffer, *ptr, sizeof(point_t));
+    memcpy((uint8_t *)point, *ptr, sizeof(point_t));
     (*ptr) += sizeof(point_t);
-    return result;
-}
 
-void manage_fps()
+
+void manage_fps(void)
 {
     static struct timespec start_time = { 0 };
     struct timespec current_time;
@@ -344,63 +144,68 @@ void manage_fps()
 #else // !__AVR
 
 // read a point from atmega flash
-point_t read_point(unsigned char **ptr)
+void read_point(point_t * point, unsigned char ** ptr)
 {
-    point_t result;
-    unsigned char *buffer = (unsigned char*)&result;
-    for(unsigned int j = 0; j < sizeof(point_t); j++)
-    {
-        *buffer++ = pgm_read_byte(*ptr);
-        (*ptr)++;
-    }
-    return result;
+    memcpy_P((uint8_t *)point, *ptr, sizeof(point_t));
+    (*ptr) += sizeof(point_t);
 }
+
+#define manage_fps()
 
 #endif // !__AVR
 
 
 // draw the model
-// Must declare function prototype with user class to compile in Arduino
-void regis_plot(const point_t *model, int count, Matrix transform, intensity_t intensity, int do_init);
-
-void regis_plot(const point_t *model, int count, Matrix transform, intensity_t intensity, int do_init)
+void regis_plot(const point_t *model, uint16_t count, matrix_t * transform, intensity_t intensity, uint8_t do_init)
 {
     if(do_init)
     {
-        window_new( &mywindow, H, W );
-        window_clear ( &mywindow );
+        window_new(&my_window, H, W);
+        window_clear(&my_window);
     }
 
-    draw_intensity( &mywindow, intensity );
+    draw_intensity(&my_window, intensity);
 
     unsigned char *ptr = (unsigned char*)model;
-    for(int i = 0; i < count; i++)
+
+    for(uint16_t i = 0; i < count; ++i)
     {
-        point_t point = read_point(&ptr);
-        Vector vertex1 = Vector(point.x,
-            point.y,
-            point.z);
-        Vector vertex2 = vertex1 * transform;
-        vertex2.scale(1/(vertex2.w));
+        point_t point;
+        vector_t vertex;
+
+        read_point(&point, &ptr);
+
+        vertex.x = point.x;
+        vertex.y = point.y;
+        vertex.z = point.z;
+        vertex.w = 1.0;
+
+        mult_v(&vertex,transform);
+
+        scale_v(&vertex, 1.0/(vertex.w));
+
 /* TODO: Clipping here */
-        vertex2.x = (vertex2.x * (float)W) / (2.0f * vertex2.w) + halfWidth;
-        vertex2.y = (vertex2.y * (float)H) / (2.0f * vertex2.w) + halfHeight;
+
+        vertex.x = (vertex.x * (float)W) / (vertex.w * 2.0) + half_width;
+        vertex.y = (vertex.y * (float)H) / (vertex.w * 2.0) + half_height;
+
         if(point.begin_poly)
         {
-            draw_abs( &mywindow, (uint16_t)vertex2.x, (uint16_t)vertex2.y );
+            draw_abs(&my_window, (uint16_t)vertex.x, (uint16_t)vertex.y);
         }
         else
         {
-            draw_line_abs( &mywindow, (uint16_t)vertex2.x, (uint16_t)vertex2.y );
+            draw_line_abs(&my_window, (uint16_t)vertex.x, (uint16_t)vertex.y);
         }
     }
 
     if(do_init)
     {
-        window_write( &mywindow );
-        window_close( &mywindow );
+        window_write(&my_window);
+        window_close(&my_window);
     }
 }
+
 
 void glxgears_loop()
 {
@@ -408,63 +213,55 @@ void glxgears_loop()
     static float roty = 30.0 / 180 * M_PI;
     static float step = -1.0 / 180 * M_PI;
 
-    window_new( &mywindow, H, W );
-    window_clear ( &mywindow );
+    matrix_t view_transform;
+    matrix_t transform;
 
-    Matrix user_rotx_ = Matrix::get_rx(user_rotx);
-    Matrix user_roty_ = Matrix::get_ry(user_roty);
-    Matrix view_rotx = Matrix::get_rx(0.0 / 180 * M_PI);
-    Matrix view_roty = Matrix::get_ry(roty);
-    Matrix view_transform = Matrix::get_translate(0, 1, 20);
+    window_new(&my_window, H, W);
+    window_clear(&my_window);
 
-    Matrix big_matrix;
-    Matrix transform = Matrix::get_translate(-1, 2, 0);
-    Matrix rz = Matrix::get_rz(rotz);
-    big_matrix = rz *
-        transform *
-        view_roty *
-        view_rotx *
-        user_rotx_ *
-        user_roty_ *
-        view_transform *
-        clipMatrix;
+    identity_m(&view_transform);
+    if(user_rotx != 0) rotx_m(&view_transform, user_rotx);
+    if(user_roty != 0) roty_m(&view_transform, user_roty);
+    translate_m(&view_transform, 0, 1.0, 20.0);      // view transform
 
-    regis_plot(glxgear1, sizeof(glxgear1) / sizeof(point_t), big_matrix, _R, 0);
+    identity_m(&transform);
+    rotz_m(&transform, rotz);
+    translate_m(&transform, -1.0, 2.0, 0);
+    roty_m(&transform, roty);
+//  rotx_m(&transform, 0.0 / 180 * M_PI);
+    mult_m(&transform, &view_transform);
+    mult_m(&transform, &clip_matrix);
 
-    window_write( &mywindow );
-    window_reset( &mywindow );
+    regis_plot(glxgear1, sizeof(glxgear1) / sizeof(point_t), &transform, _R, 0);
 
-    transform = Matrix::get_translate(5.2, 2, 0);
-    rz = Matrix::get_rz(-2.0 * rotz + 9.0 / 180 * M_PI);
-    big_matrix = rz *
-        transform *
-        view_roty *
-        view_rotx *
-        user_rotx_ *
-        user_roty_ *
-        view_transform *
-        clipMatrix;
+    window_write(&my_window);
+    window_reset(&my_window);
 
-    regis_plot(glxgear2, sizeof(glxgear2) / sizeof(point_t), big_matrix, _G, 0);
+    identity_m(&transform);
+    rotz_m(&transform, -2.0 * rotz + 9.0 / 180 * M_PI);
+    translate_m(&transform, 5.2, 2.0, 0);
+    roty_m(&transform, roty);
+//  rotx_m(&transform, 0.0 / 180 * M_PI);
+    mult_m(&transform, &view_transform);
+    mult_m(&transform, &clip_matrix);
 
-    window_write( &mywindow );
-    window_reset( &mywindow );
+    regis_plot(glxgear2, sizeof(glxgear2) / sizeof(point_t), &transform, _G, 0);
 
-    transform = Matrix::get_translate(-1.1, -4.2, 0);
-    rz = Matrix::get_rz(-2.0 * rotz + 30.0 / 180 * M_PI);
-    big_matrix = rz *
-        transform *
-        view_roty *
-        view_rotx *
-        user_rotx_ *
-        user_roty_ *
-        view_transform *
-        clipMatrix;
+    window_write(&my_window);
+    window_reset(&my_window);
 
-    regis_plot(glxgear3, sizeof(glxgear3) / sizeof(point_t), big_matrix, _B, 0);
+    identity_m(&transform);
+    rotz_m(&transform, -2.0 * rotz + 30.0 / 180 * M_PI);
+    translate_m(&transform, -1.1, -4.2, 0);
+    roty_m(&transform, roty);
+//  rotx_m(&transform, 0.0 / 180 * M_PI);
+    mult_m(&transform, &view_transform);
+    mult_m(&transform, &clip_matrix);
 
-    window_write( &mywindow );
-    window_close( &mywindow );
+    regis_plot(glxgear3, sizeof(glxgear3) / sizeof(point_t), &transform, _B, 0);
+
+    window_write(&my_window);
+    window_close(&my_window);
 
     if(animate)
     {
@@ -477,30 +274,27 @@ void glxgears_loop()
         }
     }
 
-#ifndef __AVR
     manage_fps();
-#endif
 }
+
 
 void gear_loop()
 {
     static float rotz = 0;
     static float roty = 0;
     static float step2 = 1.0 / 180 * M_PI;
-    Matrix transform = Matrix::get_translate(0, 0, 8);
-    Matrix user_rotx_ = Matrix::get_rx(user_rotx);
-    Matrix user_roty_ = Matrix::get_ry(user_roty);
-    Matrix rz = Matrix::get_rz(rotz);
-    Matrix ry = Matrix::get_ry(roty);
 
-    Matrix big_matrix;
-    big_matrix = rz *
-        ry *
-        user_rotx_ *
-        user_roty_ *
-        transform *
-        clipMatrix;
-    regis_plot(gear, sizeof(gear) / sizeof(point_t), big_matrix, _W, 1);
+    matrix_t transform;
+
+    identity_m(&transform);
+    rotz_m(&transform, rotz);
+    roty_m(&transform, roty);
+    if(user_rotx != 0) rotx_m(&transform, user_rotx);
+    if(user_roty != 0) roty_m(&transform, user_roty);
+    translate_m(&transform, 0, 0, 8.0);
+    mult_m(&transform, &clip_matrix);
+
+    regis_plot(gear, sizeof(gear) / sizeof(point_t), &transform, _W, 1);
 
     if(animate)
     {
@@ -513,78 +307,62 @@ void gear_loop()
         }
     }
 
-#ifndef __AVR
     manage_fps();
-#endif
 }
 
-void cube_loop()
+
+void icos_loop(void)
 {
     static float rotz = 0;
     static float roty = 0;
-    Matrix transform = Matrix::get_translate(0, 0, 10);
-    Matrix user_rotx_ = Matrix::get_rx(user_rotx);
-    Matrix user_roty_ = Matrix::get_ry(user_roty);
-    Matrix rz = Matrix::get_rz(rotz);
-    Matrix ry = Matrix::get_ry(roty);
 
+    matrix_t transform;
 
-    Matrix big_matrix;
-    big_matrix = rz *
-        ry *
-        user_rotx_ *
-        user_roty_ *
-        transform *
-        clipMatrix;
-    regis_plot(cube, sizeof(cube) / sizeof(point_t), big_matrix, _W, 1);
+    identity_m(&transform);
+    rotz_m(&transform, rotz);
+    roty_m(&transform, roty);
+    rotx_m(&transform, M_PI/2);
+    if(user_rotx != 0) rotx_m(&transform, user_rotx);
+    if(user_roty != 0) roty_m(&transform, user_roty);
+    translate_m(&transform, 0, 0, 8.0);
+    mult_m(&transform, &clip_matrix);
 
-#ifndef __AVR
+    regis_plot(icos, sizeof(icos) / sizeof(point_t), &transform, _W, 1);
+
+    if(animate)
+    {
+        rotz += 0.25 / 360 * M_PI * 2;
+        roty += 2.0 / 360 * M_PI * 2;
+    }
+
     manage_fps();
-#else
-    delay(30);
-#endif
+}
+
+
+void cube_loop(void)
+{
+    static float rotz = 0;
+    static float roty = 0;
+
+    matrix_t transform;
+
+    identity_m(&transform);
+    rotz_m(&transform, rotz);
+    roty_m(&transform, roty);
+    if(user_rotx != 0) rotx_m(&transform, user_rotx);
+    if(user_roty != 0) roty_m(&transform, user_roty);
+    translate_m(&transform, 0, 0, 10.0);
+    mult_m(&transform, &clip_matrix);
+
+    regis_plot(cube, sizeof(cube) / sizeof(point_t), &transform, _W, 1);
 
     if(animate)
     {
         rotz += 2.0 / 360 * M_PI * 2;
-        roty += .5 / 360 * M_PI * 2;
+        roty += 0.5 / 360 * M_PI * 2;
     }
-}
 
-
-
-void icos_loop()
-{
-    static float rotz = 0;
-    static float roty = 0;
-    Matrix transform = Matrix::get_translate(0, 0, 8);
-    Matrix rz = Matrix::get_rz(rotz);
-    Matrix user_rotx_ = Matrix::get_rx(user_rotx);
-    Matrix user_roty_ = Matrix::get_ry(user_roty);
-    Matrix rx = Matrix::get_rx(M_PI / 2);
-    Matrix ry = Matrix::get_ry(roty);
-
-
-    Matrix big_matrix;
-    big_matrix = rx *
-        ry *
-        rz *
-        user_rotx_ *
-        user_roty_ *
-        transform *
-        clipMatrix;
-
-    regis_plot(icos, sizeof(icos) / sizeof(point_t), big_matrix, _W, 1);
-
-#ifndef __AVR
     manage_fps();
-#endif
-
-    if(animate)
-    {
-        rotz += .25 / 360 * M_PI * 2;
-        roty += 2.0 / 360 * M_PI * 2;
-    }
 }
 
 
@@ -595,9 +373,9 @@ void setup() {
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
     }
-
-    begin_projection();
+    
     clear_screen();
+    begin_projection();
 }
 
 void loop() {
@@ -615,38 +393,8 @@ void loop() {
         case GLXGEARS:
             glxgears_loop();
             break;
+        default:
+            exit(0);
     }
 }
 
-#ifndef __AVR
-
-void sig_catch(int sig)
-{
-    // reset the console
-    window_close( &mywindow );
-    struct termios info;
-    tcgetattr(fileno(stdin), &info);
-    info.c_lflag |= ICANON;
-    info.c_lflag |= ECHO;
-    tcsetattr(fileno(stdin), TCSANOW, &info);
-    exit(0);
-}
-
-int main()
-{
-    signal(SIGKILL, sig_catch);
-    signal(SIGHUP, sig_catch);
-    signal(SIGINT, sig_catch);
-    signal(SIGQUIT, sig_catch);
-    signal(SIGTERM, sig_catch);
-
-    setup();
-
-    while(1)
-    {
-        loop();
-    }
-
-    return 0;
-}
-#endif

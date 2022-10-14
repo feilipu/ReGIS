@@ -4,6 +4,9 @@
  * Version     : V0.2
 */
 
+// display using XTerm & picocom
+// xterm +u8 -geometry 132x50 -ti 340 -tn 340 -e picocom -b 115200 -p 2 -f h /dev/ttyUSB0
+
 #include <stdint.h>
 #include <stdio.h>
 #include <math.h>
