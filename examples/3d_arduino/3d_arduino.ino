@@ -76,7 +76,7 @@ float user_roty = 0;
 #endif // !__AVR
 
 #include <ReGIS.h>      // ReGIS library
-#include "3d.h"         // 3D library
+#include <3d.h>         // 3D library
 
 #include "models.h"
 
@@ -91,7 +91,7 @@ window_t my_window;
 
 void clear_screen(void)
 {
-    Serial.print("\e[2J");
+    Serial.write("\x1B[2J");
 }
 
 
