@@ -84,10 +84,11 @@ float half_width;
 float half_height;
 
 // create the matrix which transforms from 3D to 2D
-matrix_t clip_matrix;
+matrix_t projection_matrix;
 
 // set up the display window for REGIS library
 window_t my_window;
+
 
 void clear_screen(void)
 {
@@ -95,26 +96,12 @@ void clear_screen(void)
 }
 
 
-void setup_clip_matrix(matrix_t * matrix, float fov, float aspect_ratio, float near, float far)
-{
-    float f = 1.0/tan(fov * 0.5);
-
-    identity_m( matrix );
-
-    matrix->e[0] = f * aspect_ratio;
-    matrix->e[5] = f;
-    matrix->e[10] = (far + near) / (far - near);
-    matrix->e[11] = 1.0; /* this 'plugs' the old z into w */
-    matrix->e[14] = (near * far * 2.0) / (near - far);
-    matrix->e[15] = 0.0;
-}
-
-
 void begin_projection()
 {
     half_width = (float)WIDTH_MAX * 0.5;
     half_height = (float)HEIGHT_MAX * 0.5;
-    setup_clip_matrix(&clip_matrix, FOV * (M_PI / 180.0), (float)W/(float)H, NEAR, FAR);
+    projection_opengl_m(&projection_matrix, FOV * (M_PI / 180.0), (float)W/(float)H, NEAR, FAR);    // or
+//  projection_w3woody_m(&projection_matrix, FOV * (M_PI / 180.0), (float)W/(float)H, NEAR, FAR);
 }
 
 
@@ -230,7 +217,7 @@ void glxgears_loop()
     roty_m(&transform, roty);
 //  rotx_m(&transform, 0.0 / 180 * M_PI);
     mult_m(&transform, &view_transform);
-    mult_m(&transform, &clip_matrix);
+    mult_m(&transform, &projection_matrix);
 
     regis_plot(glxgear1, sizeof(glxgear1) / sizeof(point_t), &transform, _R, 0);
 
@@ -243,7 +230,7 @@ void glxgears_loop()
     roty_m(&transform, roty);
 //  rotx_m(&transform, 0.0 / 180 * M_PI);
     mult_m(&transform, &view_transform);
-    mult_m(&transform, &clip_matrix);
+    mult_m(&transform, &projection_matrix);
 
     regis_plot(glxgear2, sizeof(glxgear2) / sizeof(point_t), &transform, _G, 0);
 
@@ -256,7 +243,7 @@ void glxgears_loop()
     roty_m(&transform, roty);
 //  rotx_m(&transform, 0.0 / 180 * M_PI);
     mult_m(&transform, &view_transform);
-    mult_m(&transform, &clip_matrix);
+    mult_m(&transform, &projection_matrix);
 
     regis_plot(glxgear3, sizeof(glxgear3) / sizeof(point_t), &transform, _B, 0);
 
@@ -292,7 +279,7 @@ void gear_loop()
     if(user_rotx != 0) rotx_m(&transform, user_rotx);
     if(user_roty != 0) roty_m(&transform, user_roty);
     translate_m(&transform, 0, 0, 8.0);
-    mult_m(&transform, &clip_matrix);
+    mult_m(&transform, &projection_matrix);
 
     regis_plot(gear, sizeof(gear) / sizeof(point_t), &transform, _W, 1);
 
@@ -325,7 +312,7 @@ void icos_loop(void)
     if(user_rotx != 0) rotx_m(&transform, user_rotx);
     if(user_roty != 0) roty_m(&transform, user_roty);
     translate_m(&transform, 0, 0, 8.0);
-    mult_m(&transform, &clip_matrix);
+    mult_m(&transform, &projection_matrix);
 
     regis_plot(icos, sizeof(icos) / sizeof(point_t), &transform, _W, 1);
 
@@ -352,7 +339,7 @@ void cube_loop(void)
     if(user_rotx != 0) rotx_m(&transform, user_rotx);
     if(user_roty != 0) roty_m(&transform, user_roty);
     translate_m(&transform, 0, 0, 10.0);
-    mult_m(&transform, &clip_matrix);
+    mult_m(&transform, &projection_matrix);
 
     regis_plot(cube, sizeof(cube) / sizeof(point_t), &transform, _W, 1);
 
@@ -397,4 +384,3 @@ void loop() {
             exit(0);
     }
 }
-

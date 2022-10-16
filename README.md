@@ -75,6 +75,59 @@ Expected output (where `^` is the `ESC` character).
 ^P1pS(E)W(I(M))P[600,200]V[][-200,+200]V[][400,100]W(I(G))P[700,100]V(B)[+050,][,+050][-050,](E)V(W(S1))(B)[-100,][,-050][+100,](E)V(W(S1,E))(B)[-050,][,-025][+050,](E)W(I(C))P[200,100]C(A-180)[+100]C(A+180)[+050]W(I(B))P[200,300]C(W(S1))[+100]C(W(S1,E))[+050]W(I(W))T(S02)"hello world"^\
 ```
 
+## 3D functions
+
+Vector functions
+
+```C
+/* Produce a unit vector */
+void unit_v(vector_t * vect);
+
+/* Scale a vector by m, but don't touch w dimension */
+void scale_v(vector_t * vect, float scale);
+
+/* Produce a dot product between vectors */
+float dot_v(vector_t * vect1, vector_t * vect2);
+
+/* Vector Matrix Multiplication */
+void mult_v(vector_t * vect,matrix_t * multiplier);
+```
+
+Matrix 3D (Homogeneous Coordinate) functions
+
+```C
+/* Produce an identity matrix */
+void identity_m(matrix_t * matrix);
+
+/* Produce a transformation (translation) */
+void translate_m(matrix_t * matrix, float x, float y, float z);
+
+/* Produce a transformation (scale) */
+void scale_m(matrix_t * matrix, float x, float y, float z);
+
+/* Produce a transformation (shear) */
+void shear_m(matrix_t * matrix, float x, float y, float z);
+
+/* Rotation in x dimension */
+void rotx_m(matrix_t * matrix, float angle);
+
+/* Rotation in y dimension */
+void roty_m(matrix_t * matrix, float angle);
+
+/* Rotation in z dimension */
+void rotz_m(matrix_t * matrix, float angle);
+
+/* Set up a projection matrix - OpenGL */
+void projection_opengl_m(matrix_t * matrix, float fov, float aspect_ratio, float near, float far);
+
+/* Set up a projection matrix - W3Woody */
+void projection_w3woody_m(matrix_t * matrix, float fov, float aspect_ratio, float near, float far);
+
+/* Matrix Multiplication */
+void mult_m(matrix_t * multiplicand, matrix_t * multiplier);
+```
+
+
 ## Credits
 
 For describing [how to get XTerm working with ReGIS](https://groups.google.com/g/rc2014-z80/c/fuji5iuJ3Jc/m/FNYwGGbaAQAJ), thanks Rob Gowin.<br>

@@ -124,6 +124,13 @@ void roty_m(matrix_t * matrix, float angle);
 /* Rotation in z dimension */
 void rotz_m(matrix_t * matrix, float angle);
 
+/* Set up projection OpenGL */
+void projection_opengl_m(matrix_t * matrix, float fov, float aspect_ratio, float near, float far);
+
+
+/* Set up projection W3Woody */
+void projection_w3woody_m(matrix_t * matrix, float fov, float aspect_ratio, float near, float far);
+
 
 /* Matrix Multiplication */
 void mult_m(matrix_t * multiplicand, matrix_t * multiplier);
