@@ -143,7 +143,7 @@ void read_point(point_t * point, unsigned char ** ptr)
 
 
 // draw the model
-void regis_plot(const point_t *model, uint16_t count, matrix_t * transform, intensity_t intensity, uint8_t do_init)
+void regis_plot(const point_t *model, uint16_t count, matrix_t * transform, w_intensity_t intensity, uint8_t do_init)
 {
     if(do_init)
     {

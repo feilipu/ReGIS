@@ -59,6 +59,8 @@
 /* Set up Projection W3Woody */
 void projection_w3woody_m(matrix_t * matrix, float fov, float aspect_ratio, float near, float far)
 {
+    (void)far;      // unused here, so avoid compiler warning
+
     float f = 1.0/tan(fov * 0.5);
 
     identity_m( matrix );
