@@ -1,6 +1,6 @@
 #!/bin/bash
 
-T=/dev/ttyACM1
+T=$1
 DEMO2=0
 
 function send() {
