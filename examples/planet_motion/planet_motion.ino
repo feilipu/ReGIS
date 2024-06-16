@@ -109,26 +109,28 @@ cartesian_coordinates_t theSun, thePlanet;
 // the setup function runs once when you press reset or power the board
 void setup() {
 
-    // initialize serial communication at 115200 bits per second:
+    // initialize serial communication at 115200 bits per second.
     Serial.begin(115200);
+    // initialize standard IO stdio.h C functions.
+    stdio_init();
 
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
     }
 
-    Serial.println("Set up complete!");
+    fputs_P(PSTR("Set up complete!"), stdout);
 }
 
 void loop()
 {
     uint16_t d;
-    float sun_x;
-    float sun_y;
+    uint16_t sun_x;
+    uint16_t sun_y;
     char s[10];
 
     for (d = 7671; d < (7868+(4*365)+1); ++d)                                       // January 1st, 2021 + 4 years
     {
-        window_new( &mywindow, 768, 480 );                                          // open command list
+        window_new( &mywindow, 768, 480, stdout);                                   // open command list
         window_clear( &mywindow );
 
         theSun.day = (float)d;
@@ -215,7 +217,6 @@ void loop()
         draw_abs( &mywindow, 10, 450 );
         draw_text( &mywindow, s, 2);                                                // draw date
 
-        window_write( &mywindow );                                                  // write out window to screen
         window_close( &mywindow );                                                  // close command list
     }
 }

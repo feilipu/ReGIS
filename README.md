@@ -17,7 +17,7 @@ XTerm is the only known software solution supporting ReGIS commands (to be impro
 $ sudo apt install -y libxaw7-dev libncurses-dev libxft-dev
 $ wget https://invisible-island.net/datafiles/release/xterm.tar.gz
 $ tar xf xterm.tar.gz
-$ cd xterm-373
+$ cd xterm-392
 $ ./configure --enable-regis-graphics
 $ make
 $ sudo make install

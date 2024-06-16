@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -45,18 +46,17 @@
 /****************************************************************************/
 
 /* Open a graphics window, in graphics mode, and inititialise graphics */
-uint8_t window_new(window_t * win, uint16_t width, uint16_t height)
+uint8_t window_new(window_t * win, uint16_t width, uint16_t height, FILE * fp)
 {
     if(win != NULL)
     {
-        win->command = (char *)malloc(20);
+        if (fp != NULL) win->fp = fp; else win->fp = stdout;
         if (width && width < WIDTH_MAX) win->width = width; else win->width = WIDTH_MAX-1;
         if (height && height < HEIGHT_MAX) win->height = height; else win->height = HEIGHT_MAX-1;
-
 #ifdef __AVR
-        sprintf_P(win->command, PSTR("%cP1p"), ASCII_ESC);
+        fprintf_P(win->fp, PSTR("%cP1p"), ASCII_ESC);
 #else
-        sprintf(win->command, "%cP1p", ASCII_ESC);
+        fprintf(win->fp, "%cP1p", ASCII_ESC);
 #endif
         return 1;
     }

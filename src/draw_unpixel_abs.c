@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,25 +42,15 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Erase a pixel at absolute location */
 void draw_unpixel_abs(window_t * win, uint16_t x, uint16_t y)
 {
-    char s[24];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("P[%.3d,%.3d]V(W(E))[]"), x, y);
+    fprintf_P(win->fp, PSTR("P[%.3d,%.3d]V(W(E))[]"), x, y);
 #else
-    sprintf(s, "P[%.3d,%.3d]V(W(E))[]", x, y);
+    fprintf(win->fp, "P[%.3d,%.3d]V(W(E))[]", x, y);
 #endif
-
-    appendstring(win, s);
 }

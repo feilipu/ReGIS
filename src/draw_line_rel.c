@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,26 +42,17 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw a line to relative position */
 void draw_line_rel(window_t * win, int16_t dx, int16_t dy)
 {
-    char s[18];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("V[][%+.3d,%+.3d]"), dx, dy);
+    fprintf_P(win->fp, PSTR("V[][%+.3d,%+.3d]"), dx, dy);
 #else
-    sprintf(s, "V[][%+.3d,%+.3d]", dx, dy);
+    fprintf(win->fp, "V[][%+.3d,%+.3d]", dx, dy);
 #endif
-
-    appendstring(win, s);
 
     win->y += dy;
     win->x += dx;

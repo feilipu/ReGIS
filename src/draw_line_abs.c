@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,27 +42,17 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw a line to absolute location */
 void draw_line_abs(window_t * win, uint16_t x, uint16_t y)
 {
-    char s[16];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("V[][%.3d,%.3d]"), x, y);
+    fprintf_P(win->fp, PSTR("V[][%.3d,%.3d]"), x, y);
 #else
-    sprintf(s, "V[][%.3d,%.3d]", x, y);
+    fprintf(win->fp, "V[][%.3d,%.3d]", x, y);
 #endif
-
-    appendstring(win, s);
 
     win->y = y;
     win->x = x;

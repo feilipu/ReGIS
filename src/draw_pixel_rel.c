@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,25 +42,15 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw a pixel to screen at current position */
 void draw_pixel_rel(window_t * win)
 {
-    char s[6];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("V[]"));
+    fputs_P(PSTR("V[]"), win->fp);
 #else
-    sprintf(s, "V[]");
+    fputs("V[]", win->fp);
 #endif
-
-    appendstring(win, s);
 }

@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,27 +42,17 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Erase a line from current position */
 void draw_unline_rel(window_t * win, int16_t dx, int16_t dy)
 {
-    char s[22];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("V(W(E))[][%+.3d,%+.3d]"), dx, dy);
+    fprintf_P(win->fp, PSTR("V(W(E))[][%+.3d,%+.3d]"), dx, dy);
 #else
-    sprintf(s, "V(W(E))[][%+.3d,%+.3d]", dx, dy);
+    fprintf(win->fp, "V(W(E))[][%+.3d,%+.3d]", dx, dy);
 #endif
-
-    appendstring(win, s);
 
     win->y += dy;
     win->x += dx;

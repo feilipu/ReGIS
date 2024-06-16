@@ -23,44 +23,45 @@ window_t mywindow;
 // the setup function runs once when you press reset or power the board
 void setup() {
 
-    // initialize serial communication at 115200 bits per second:
+    // initialize serial communication at 115200 bits per second.
     Serial.begin(115200);
+    // initialize standard IO stdio.h C functions.
+    stdio_init();
 
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
     }
 
-    Serial.println("Set up complete!");
+    fputs_P(PSTR("Set up complete!"), stdout);
 }
 
 void loop(void)
 {
-
-    window_new( &mywindow, 768, 480 );
-    window_clear ( &mywindow );
+    window_new( &mywindow, 768, 480, stdout);
+    window_clear( &mywindow );
 
     draw_intensity( &mywindow, _M);
 
-    draw_abs( &mywindow, 600, 200 );
-    draw_line_rel( &mywindow, -200, 200 );
+    draw_abs( &mywindow, 600, 200);
+    draw_line_rel( &mywindow, -200, 200);
     draw_line_abs( &mywindow, 400, 100);
 
     draw_intensity( &mywindow, _G);
 
-    draw_abs( &mywindow, 700, 100 );
+    draw_abs( &mywindow, 700, 100);
     draw_box( &mywindow, 50, 50);
     draw_box_fill( &mywindow, -100, -50);
     draw_unbox_fill( &mywindow, -50, -25);
 
     draw_intensity( &mywindow, _C);
 
-    draw_abs( &mywindow, 200, 100 );
+    draw_abs( &mywindow, 200, 100);
     draw_arc( &mywindow, 100, -180);
     draw_arc( &mywindow, 50, 180);
 
     draw_intensity( &mywindow, _B);
 
-    draw_abs( &mywindow, 200, 300 );
+    draw_abs( &mywindow, 200, 300);
     draw_circle_fill( &mywindow, 100);
     draw_uncircle_fill( &mywindow, 50);
 
@@ -68,7 +69,6 @@ void loop(void)
 
     draw_text( &mywindow, "hello world", 2);
 
-    window_write( &mywindow );
     window_close( &mywindow );
 
     delay(1000);

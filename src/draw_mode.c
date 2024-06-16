@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,37 +42,27 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Set writing mode */
 void draw_mode(window_t * win, w_mode_t mode)
 {
-    char s[6];
-
 #ifdef __AVR
     switch (mode)
     {
-        case _REP: sprintf_P(s,PSTR("W(R)")); break;
-        case _ERA: sprintf_P(s,PSTR("W(E)")); break;
-        case _OVL: sprintf_P(s,PSTR("W(V)")); break;
-        case _CPL: sprintf_P(s,PSTR("W(C)")); break;
+        case _REP: fputs_P(PSTR("W(R)"), win->fp); break;
+        case _ERA: fputs_P(PSTR("W(E)"), win->fp); break;
+        case _OVL: fputs_P(PSTR("W(V)"), win->fp); break;
+        case _CPL: fputs_P(PSTR("W(C)"), win->fp); break;
     }
 #else
     switch (mode)
     {
-        case _REP: sprintf(s,"W(R)"); break;
-        case _ERA: sprintf(s,"W(E)"); break;
-        case _OVL: sprintf(s,"W(V)"); break;
-        case _CPL: sprintf(s,"W(C)"); break;
+        case _REP: fputs("W(R)", win->fp); break;
+        case _ERA: fputs("W(E)", win->fp); break;
+        case _OVL: fputs("W(V)", win->fp); break;
+        case _CPL: fputs("W(C)", win->fp); break;
     }
 #endif
-
-    appendstring(win, s);
 }

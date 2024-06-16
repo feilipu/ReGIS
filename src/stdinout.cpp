@@ -1,5 +1,5 @@
 /*
- * appendstring.c
+ * window_new.c
  *
  * Copyright (c) 2021 Phillip Stevens
  * Create Time: July 2021
@@ -29,29 +29,48 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
-#include "ReGIS.h"
+#include "Arduino.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
+/***        STDIO Implementation                                          ***/
 /****************************************************************************/
 
+#ifdef __cplusplus
+    extern "C" {
+#endif
 
-void appendstring(window_t * win, char const * text)
+// Function that printf and related will use to print
+static int serial_putchar(char c, FILE *f)
 {
-    int l = strlen(win->command) + strlen(text) + 1;
-
-    char * ptr = realloc(win->command, l);
-
-    if( ptr )
-    {
-        win->command = ptr;
-    }
-
-    strcat(win->command, text);
+    (void)(f);
+    Serial.write(c);
+    return 1;
 }
 
+// Function that scanf and related will use to read
+static int serial_getchar(FILE *)
+{
+    // Wait until character is avilable
+    while(Serial.available() <= 0) {}
+
+    return Serial.read();
+}
+
+void stdio_init(void)
+{
+    static FILE serial_stdinout = { .buf = NULL, .unget = 0, .flags = _FDEV_SETUP_RW, .size = 0, .len = 0, .put = serial_putchar, .get = serial_getchar, .udata = 0 };
+
+    // Set up stdout and stdin
+    stdout = &serial_stdinout;
+    stdin  = &serial_stdinout;
+    stderr = &serial_stdinout;
+}
+
+#ifdef __cplusplus
+}
+#endif

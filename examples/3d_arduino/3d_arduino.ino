@@ -1,7 +1,7 @@
 /*
  * 3D animated graphics over the REGIS protocol for Arduino systems
  *
- * Copyright (c) 2022 Phillip Stevens
+ * Copyright (c) 2022-2024 Phillip Stevens
  *
  * Derived from original C++ code by:
  *
@@ -44,10 +44,10 @@
 // these are the demonstration options
 #define CUBE '1'
 #define ICOS '2'
-#define GEAR '3'        // not working on UNO, insufficient RAM
-#define GLXGEARS '4'    // not working on UNO, insufficient RAM
+#define GEAR '3'
+#define GLXGEARS '4'
 
-uint8_t demo = ICOS;    // select a demonstration from above options
+uint8_t demo = GLXGEARS;    // select a demonstration from above options
 
 uint8_t animate = 1;
 
@@ -147,7 +147,7 @@ void regis_plot(const point_t *model, uint16_t count, matrix_t * transform, w_in
 {
     if(do_init)
     {
-        window_new(&my_window, H, W);
+        window_new(&my_window, H, W, stdout);
         window_clear(&my_window);
     }
 
@@ -188,7 +188,6 @@ void regis_plot(const point_t *model, uint16_t count, matrix_t * transform, w_in
 
     if(do_init)
     {
-        window_write(&my_window);
         window_close(&my_window);
     }
 }
@@ -203,7 +202,7 @@ void glxgears_loop()
     matrix_t view_transform;
     matrix_t transform;
 
-    window_new(&my_window, H, W);
+    window_new(&my_window, H, W, stdout);
     window_clear(&my_window);
 
     identity_m(&view_transform);
@@ -221,9 +220,6 @@ void glxgears_loop()
 
     regis_plot(glxgear1, sizeof(glxgear1) / sizeof(point_t), &transform, _R, 0);
 
-    window_write(&my_window);
-    window_reset(&my_window);
-
     identity_m(&transform);
     rotz_m(&transform, -2.0 * rotz + 9.0 / 180 * M_PI);
     translate_m(&transform, 5.2, 2.0, 0);
@@ -233,9 +229,6 @@ void glxgears_loop()
     mult_m(&transform, &projection_matrix);
 
     regis_plot(glxgear2, sizeof(glxgear2) / sizeof(point_t), &transform, _G, 0);
-
-    window_write(&my_window);
-    window_reset(&my_window);
 
     identity_m(&transform);
     rotz_m(&transform, -2.0 * rotz + 30.0 / 180 * M_PI);
@@ -247,7 +240,6 @@ void glxgears_loop()
 
     regis_plot(glxgear3, sizeof(glxgear3) / sizeof(point_t), &transform, _B, 0);
 
-    window_write(&my_window);
     window_close(&my_window);
 
     if(animate)
@@ -354,8 +346,10 @@ void cube_loop(void)
 
 
 void setup() {
-    // initialize serial communication at 115200 bits per second:
+    // initialize serial communication at 115200 bits per second.
     Serial.begin(115200);
+    // initialize standard IO stdio.h C functions.
+    stdio_init();
 
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.

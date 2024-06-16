@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,45 +42,35 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Set writing intensity (colour) */
 void draw_intensity(window_t * win, w_intensity_t intensity)
 {
-    char s[8];
-
 #ifdef __AVR
 switch (intensity)
     {
-        case _D: sprintf_P(s,PSTR("W(I(D))")); break;
-        case _B: sprintf_P(s,PSTR("W(I(B))")); break;
-        case _R: sprintf_P(s,PSTR("W(I(R))")); break;
-        case _M: sprintf_P(s,PSTR("W(I(M))")); break;
-        case _G: sprintf_P(s,PSTR("W(I(G))")); break;
-        case _C: sprintf_P(s,PSTR("W(I(C))")); break;
-        case _Y: sprintf_P(s,PSTR("W(I(Y))")); break;
-        case _W: sprintf_P(s,PSTR("W(I(W))")); break;
+        case _D: fputs_P(PSTR("W(I(D))"), win->fp); break;
+        case _B: fputs_P(PSTR("W(I(B))"), win->fp); break;
+        case _R: fputs_P(PSTR("W(I(R))"), win->fp); break;
+        case _M: fputs_P(PSTR("W(I(M))"), win->fp); break;
+        case _G: fputs_P(PSTR("W(I(G))"), win->fp); break;
+        case _C: fputs_P(PSTR("W(I(C))"), win->fp); break;
+        case _Y: fputs_P(PSTR("W(I(Y))"), win->fp); break;
+        case _W: fputs_P(PSTR("W(I(W))"), win->fp); break;
     }
 #else
     switch (intensity)
     {
-        case _D: sprintf(s,"W(I(D))"); break;
-        case _B: sprintf(s,"W(I(B))"); break;
-        case _R: sprintf(s,"W(I(R))"); break;
-        case _M: sprintf(s,"W(I(M))"); break;
-        case _G: sprintf(s,"W(I(G))"); break;
-        case _C: sprintf(s,"W(I(C))"); break;
-        case _Y: sprintf(s,"W(I(Y))"); break;
-        case _W: sprintf(s,"W(I(W))"); break;
+        case _D: fputs("W(I(D))", win->fp); break;
+        case _B: fputs("W(I(B))", win->fp); break;
+        case _R: fputs("W(I(R))", win->fp); break;
+        case _M: fputs("W(I(M))", win->fp); break;
+        case _G: fputs("W(I(G))", win->fp); break;
+        case _C: fputs("W(I(C))", win->fp); break;
+        case _Y: fputs("W(I(Y))", win->fp); break;
+        case _W: fputs("W(I(W))", win->fp); break;
     }
 #endif
-
-    appendstring(win, s);
 }

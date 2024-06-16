@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,25 +42,15 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw a circle, centred on current position */
 void draw_circle(window_t * win, uint16_t radius)
 {
-    char s[10];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("C[%+.3d]"), radius);
+    fprintf_P(win->fp, PSTR("C[%+.3d]"), radius);
 #else
-    sprintf(s, "C[%+.3d]", radius);
+    fprintf(win->fp, "C[%+.3d]", radius);
 #endif
-
-    appendstring(win, s);
 }

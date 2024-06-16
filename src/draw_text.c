@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,27 +42,19 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw text from current position */
 void draw_text(window_t * win, char const * text, uint8_t size)
 {
-    char s[10];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("T(S%.2d)\""), size);
+    fprintf_P(win->fp, PSTR("T(S%.2d)\""), size);
+    fputs((char *)text, win->fp);
+    fputs_P(PSTR("\""), win->fp);
 #else
-    sprintf(s, "T(S%.2d)\"", size);
+    fprintf(win->fp, "T(S%.2d)\"", size);
+    fputs((char *)text, win->fp);
+    fputs((char *)"\"", win->fp);
 #endif
-
-    appendstring(win, s);
-    appendstring(win, text);
-    appendstring(win, "\"");
 }

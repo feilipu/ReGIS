@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,25 +42,15 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Draw a filled box from current position */
 void draw_box_fill(window_t * win, int16_t width, int16_t height)
 {
-    char s[38];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("V(W(S1))(B)[%+.3d,][,%+.3d][%+.3d,](E)"), width, height, -width);
+    fprintf_P(win->fp, PSTR("V(W(S1))(B)[%+.3d,][,%+.3d][%+.3d,](E)"), width, height, -width);
 #else
-    sprintf(s, "V(W(S1))(B)[%+.3d,][,%+.3d][%+.3d,](E)", width, height, -width);
+    fprintf(win->fp, "V(W(S1))(B)[%+.3d,][,%+.3d][%+.3d,](E)", width, height, -width);
 #endif
-
-    appendstring(win, s);
 }

@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,27 +42,17 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Relative move position */
 void draw_rel(window_t * win, int16_t dx, int16_t dy)
 {
-    char s[14];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("P[%+.3d,%+.3d]"), dx, dy);
+    fprintf_P(win->fp, PSTR("P[%+.3d,%+.3d]"), dx, dy);
 #else
-    sprintf(s, "P[%+.3d,%+.3d]", dx, dy);
+    fprintf(win->fp, "P[%+.3d,%+.3d]", dx, dy);
 #endif
-
-    appendstring(win, s);
 
     win->y += dy;
     win->x += dx;

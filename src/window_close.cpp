@@ -38,8 +38,6 @@
 #include <avr/pgmspace.h>
 #endif
 
-#include <HardwareSerial.h>
-
 #include "ReGIS.h"
 
 /****************************************************************************/
@@ -49,6 +47,10 @@
 /* Close a graphics window, return to text mode */
 void window_close(window_t * win)
 {
-    Serial.write("\x1B\x5C\n"); /* ESC \ 0x1B 0x5C */
-    free(win->command);
+#ifdef __AVR
+        fprintf_P(win->fp, PSTR("%c%c\n"), ASCII_ESC, ASCII_BSLASH);
+#else
+        fprintf(win->fp, "%c%c\n", ASCII_ESC, ASCII_BSLASH);
+#endif
+
 }

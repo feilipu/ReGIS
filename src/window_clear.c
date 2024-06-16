@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,25 +42,15 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Clear window */
 void window_clear(window_t * win)
 {
-    char s[6];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("S(E)"));
+    fputs_P(PSTR("S(E)"), win->fp);
 #else
-    sprintf(s, "S(E)");
+    fputs("S(E)", win->fp);
 #endif
-
-    appendstring(win, s);
 }

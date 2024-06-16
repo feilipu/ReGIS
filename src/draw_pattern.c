@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,49 +42,39 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Set writing pattern */
 void draw_pattern(window_t * win, w_pattern_t pattern)
 {
-    char s[6];
-
 #ifdef __AVR
     switch (pattern)
     {
-        case _P0: sprintf_P(s,PSTR("W(P0)")); break;
-        case _P1: sprintf_P(s,PSTR("W(P1)")); break;
-        case _P2: sprintf_P(s,PSTR("W(P2)")); break;
-        case _P3: sprintf_P(s,PSTR("W(P3)")); break;
-        case _P4: sprintf_P(s,PSTR("W(P4)")); break;
-        case _P5: sprintf_P(s,PSTR("W(P5)")); break;
-        case _P6: sprintf_P(s,PSTR("W(P6)")); break;
-        case _P7: sprintf_P(s,PSTR("W(P7)")); break;
-        case _P8: sprintf_P(s,PSTR("W(P8)")); break;
-        case _P9: sprintf_P(s,PSTR("W(P9)")); break;
+        case _P0: fputs_P(PSTR("W(P0)"), win->fp); break;
+        case _P1: fputs_P(PSTR("W(P1)"), win->fp); break;
+        case _P2: fputs_P(PSTR("W(P2)"), win->fp); break;
+        case _P3: fputs_P(PSTR("W(P3)"), win->fp); break;
+        case _P4: fputs_P(PSTR("W(P4)"), win->fp); break;
+        case _P5: fputs_P(PSTR("W(P5)"), win->fp); break;
+        case _P6: fputs_P(PSTR("W(P6)"), win->fp); break;
+        case _P7: fputs_P(PSTR("W(P7)"), win->fp); break;
+        case _P8: fputs_P(PSTR("W(P8)"), win->fp); break;
+        case _P9: fputs_P(PSTR("W(P9)"), win->fp); break;
     }
 #else
     switch (pattern)
     {
-        case _P0: sprintf(s,"W(P0)"); break;
-        case _P1: sprintf(s,"W(P1)"); break;
-        case _P2: sprintf(s,"W(P2)"); break;
-        case _P3: sprintf(s,"W(P3)"); break;
-        case _P4: sprintf(s,"W(P4)"); break;
-        case _P5: sprintf(s,"W(P5)"); break;
-        case _P6: sprintf(s,"W(P6)"); break;
-        case _P7: sprintf(s,"W(P7)"); break;
-        case _P8: sprintf(s,"W(P8)"); break;
-        case _P9: sprintf(s,"W(P9)"); break;
+        case _P0: fputs("W(P0)", win->fp); break;
+        case _P1: fputs("W(P1)", win->fp); break;
+        case _P2: fputs("W(P2)", win->fp); break;
+        case _P3: fputs("W(P3)", win->fp); break;
+        case _P4: fputs("W(P4)", win->fp); break;
+        case _P5: fputs("W(P5)", win->fp); break;
+        case _P6: fputs("W(P6)", win->fp); break;
+        case _P7: fputs("W(P7)", win->fp); break;
+        case _P8: fputs("W(P8)", win->fp); break;
+        case _P9: fputs("W(P9)", win->fp); break;
     }
 #endif
-
-    appendstring(win, s);
 }

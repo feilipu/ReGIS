@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,25 +42,15 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Erase a circle, centred on current position */
 void draw_uncircle(window_t * win, uint16_t radius)
 {
-    char s[16];
-
 #ifdef __AVR
-    sprintf_P(s, PSTR("C(W(E))[%+.3d]"), radius);
+    fprintf_P(win->fp, PSTR("C(W(E))[%+.3d]"), radius);
 #else
-    sprintf(s, "C(W(E))[%+.3d]", radius);
+    fprintf(win->fp, "C(W(E))[%+.3d]", radius);
 #endif
-
-    appendstring(win, s);
 }

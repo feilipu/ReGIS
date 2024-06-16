@@ -29,6 +29,7 @@
 /***        Include files                                                 ***/
 /****************************************************************************/
 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,28 +42,19 @@
 #include "ReGIS.h"
 
 /****************************************************************************/
-/***       Private Functions                                              ***/
-/****************************************************************************/
-
-extern void appendstring(window_t * win, char const * text);
-
-/****************************************************************************/
 /***       Functions                                                      ***/
 /****************************************************************************/
 
 /* Relative move offset direction */
 void draw_ofs(window_t * win, uint16_t d, offset_t offset)
 {
-    char s[14];
     uint16_t hypot;
 
 #ifdef __AVR
-    sprintf_P(s, PSTR("P(W(M%d))%d"), d, (uint8_t)offset);
+    fprintf_P(win->fp, PSTR("P(W(M%d))%d"), d, (uint8_t)offset);
 #else
-    sprintf(s, "P(W(M%d))%d", d, (uint8_t)offset);
+    fprintf(win->fp, "P(W(M%d))%d", d, (uint8_t)offset);
 #endif
-
-    appendstring(win, s);
 
     hypot = (uint16_t)((d*70)/99);  // d/sqrt(2)
 
