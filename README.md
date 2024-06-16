@@ -75,6 +75,21 @@ Expected output (where `^` is the `ESC` character).
 ^P1pS(E)W(I(M))P[600,200]V[][-200,+200]V[][400,100]W(I(G))P[700,100]V(B)[+050,][,+050][-050,](E)V(W(S1))(B)[-100,][,-050][+100,](E)V(W(S1,E))(B)[-050,][,-025][+050,](E)W(I(C))P[200,100]C(A-180)[+100]C(A+180)[+050]W(I(B))P[200,300]C(W(S1))[+100]C(W(S1,E))[+050]W(I(W))T(S02)"hello world"^\
 ```
 
+### Connecting TTYs
+
+To try this out virtually, you can cross two local pseudo TTYs, connect to one
+via `picocom` or `tio` in `xterm`, and then send commands via the other PTY.
+Use the helper script [`ptys.sh`] for convenience.
+
+You can also hook up two serial devices to your laptop and cross them.
+An [SLogic combo8](https://wiki.sipeed.com/hardware/en/logic_analyzer/combo8/)
+will do. Connect its UART1 TX to its UART0 RX. So UART1 will be the sender and
+UART0 the receiver.
+
+For convenience, use the script [`xterm.sh`](xterm.sh) to launch local `xterm`
+and `picocom` builds, run and [`regis.sh`](regis.sh) to send the demo commands.
+Both scripts take the TTY to use as an argument. Adjust them as needed.
+
 ## 3D functions
 
 Vector functions
