@@ -1,5 +1,5 @@
 /*
- * window_close.cpp
+ * window_close.c
  *
  * Copyright (c) 2021 Phillip Stevens
  * Create Time: July 2021

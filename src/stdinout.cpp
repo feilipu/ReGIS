@@ -1,8 +1,8 @@
 /*
- * window_new.c
+ * stdinout.cpp
  *
  * Copyright (c) 2021 Phillip Stevens
- * Create Time: July 2021
+ * Create Time: June 2024
  *
  * The MIT License (MIT)
  *
