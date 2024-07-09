@@ -3,11 +3,11 @@
 #ifndef _PLANET_MOTION_H
 #define _PLANET_MOTION_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
 
 // numeric constants...
 
