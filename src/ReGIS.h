@@ -124,9 +124,6 @@ typedef enum w_intensity_e
 typedef struct window_s {
     FILE * fp;          // display (output) device
 
-    uint16_t x;         // current cursor position
-    uint16_t y;         // current cursor position
-
     uint16_t width;     // desired window width  (ReGIS maximum 768)
     uint16_t height;    // desired window height (ReGIS maximum 480)
 } window_t;

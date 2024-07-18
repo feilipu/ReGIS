@@ -53,7 +53,4 @@ void draw_line_rel(window_t * win, int16_t dx, int16_t dy)
 #else
     fprintf(win->fp, "V[][%+.3d,%+.3d]", dx, dy);
 #endif
-
-    win->y += dy;
-    win->x += dx;
 }

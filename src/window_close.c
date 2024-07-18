@@ -52,5 +52,5 @@ void window_close(window_t * win)
 #else
         fprintf(win->fp, "%c%c\n", ASCII_ESC, ASCII_BSLASH);
 #endif
-
 }
+

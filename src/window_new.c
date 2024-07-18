@@ -50,7 +50,7 @@ uint8_t window_new(window_t * win, uint16_t width, uint16_t height, FILE * fp)
 {
     if(win != NULL)
     {
-        if (fp != NULL) win->fp = fp; else win->fp = stdout;
+        if (fp != NULL) win->fp = fp; else return 0;
         if (width && width < WIDTH_MAX) win->width = width; else win->width = WIDTH_MAX-1;
         if (height && height < HEIGHT_MAX) win->height = height; else win->height = HEIGHT_MAX-1;
 #ifdef __AVR
